@@ -6,60 +6,45 @@ services:
     image: "ghcr.io/home-assistant/home-assistant:stable"
     volumes:
       # Local path where your home assistant config will be stored
-      - ./home-assistant/config:/config
-#      - /etc/localtime:/etc/localtime:ro
+      - homeassistant:/config
+      - ./home-assistant/configuration.yaml:/config/configuration.yaml
     ports:
       - "8123:8123"
     restart: unless-stopped
     privileged: true
-    network_mode: host
     depends_on:
       - mosquitto
-#    user: "${LOCAL_USER}:${LOCAL_USER}"
+      - node-red
 
   # Mosquitto
   mosquitto:
     container_name: mosquitto
     image: eclipse-mosquitto
     volumes:
-      - ./mosquitto/config:/mosquitto/config
-      - ./mosquitto/data:/mosquitto/data
-      - ./mosquitto/log:/mosquitto/log
+      - ./mosquitto:/mosquitto/config
+      - mosquitto:/data:/mosquitto/data
+      - mosquitto:/log:/mosquitto/log
     ports:
       - "1883:1883"
       - "9001:9001"
     restart: unless-stopped
-    network_mode: host
+
+  # Node-RED
+  node-red:
+    container_name: nodered
+    image: nodered/node-red
+    volumes:
+      - nodered:/data
+    ports:
+      - "1880:1880"
     depends_on:
-#    user: "${LOCAL_USER}:${LOCAL_USER}"
-
-  # Visual Studio code server
-  vscode:
-    container_name: code-server
-    image: codercom/code-server:v2
-    volumes:
-      # The directory you want to open in VS Code.
-      - ./:/home/coder/project
-      # points to a local dir where vs code stores its data.
-      - ./code-server/data:/home/coder/.local/share/code-server
-    ports:
-      - "8443:8443"
-    command: code-server --auth password --port 8443 --disable-telemetry /home/coder/project
-    restart: unless-stopped
-    network_mode: host
+      - homeassistant
+      - mosquitto
     environment:
-      PASSWORD: "${VSCODE_PASSWORD}"
-#    user: "${LOCAL_USER}:${LOCAL_USER}"
-
-  # Portainer
-  portainer:
-    container_name: portainer
-    image: portainer/portainer-ce
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "./portainer/data:/data"
-    ports:
-      - "9000:9000"
+      TZ: "Europe/Brussels"
     restart: unless-stopped
-    network_mode: host
-#    user: "${LOCAL_USER}:${LOCAL_USER}"
+
+volumes:
+  homeassistant:
+  mosquitto:
+  nodered:
