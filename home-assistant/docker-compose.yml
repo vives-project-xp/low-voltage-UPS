@@ -1,0 +1,66 @@
+version: '3'
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - project-exp:/var/run/docker.sock:ro
+      - project-exp:/data
+    ports:
+      - 9000:9000
+
+  # nodered:
+  #   container_name: nodered
+  #   image: nodered/node-red
+  #   volumes:
+  #     - project-exp:/data
+  #   depends_on:
+  #     - homeassistant
+  #     - mosquitto
+  #   environment:
+  #     TZ: "Europe/Madrid"
+  #   restart: unless-stopped
+  #   ports:
+  #     - "1880:1880"    
+
+  homeassistant:
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+      - project-exp:/config
+    restart: unless-stopped
+    privileged: true
+    ports:
+      - 8123:8123
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    volumes:
+      - project-exp:/mosquitto/config/:ro
+      - project-exp:/mosquitto/log/
+      - project-exp:/mosquitto/data/
+    ports:
+      - 1883:1883
+
+  mariadb:
+    image: linuxserver/mariadb
+    container_name: mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: homeassistant_db
+      MYSQL_USER: homeassistant
+      MYSQL_PASSWORD: "${HA_MYSQL_PASSWORD}"
+      PUID: 1000
+      PGID: 1000
+    volumes:
+      - project-exp:/config
+    ports:
+      - "3306:3306"
+
+volumes:
+  project-exp:
+    external: false
