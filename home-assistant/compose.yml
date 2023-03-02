@@ -1,75 +1,65 @@
 version: '3'
 services:
+  # HomeAssistant
   homeassistant:
-    container_name: homeassistant
-    image: homeassistant/home-assistant
+    container_name: home-assistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
     volumes:
-      - ./homeassistant-config:/config
-      - /etc/localtime:/etc/localtime:ro
+      # Local path where your home assistant config will be stored
+      - ./home-assistant/config:/config
+#      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "8123:8123"
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
+    depends_on:
+      - mosquitto
+#    user: "${LOCAL_USER}:${LOCAL_USER}"
+
+  # Mosquitto
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    ports:
+      - "1883:1883"
+      - "9001:9001"
     restart: unless-stopped
     network_mode: host
     depends_on:
-      - mariadb
-      - mosquitto
-  mariadb:
-    image: linuxserver/mariadb
-    container_name: mariadb
+#    user: "${LOCAL_USER}:${LOCAL_USER}"
+
+  # Visual Studio code server
+  vscode:
+    container_name: code-server
+    image: codercom/code-server:v2
+    volumes:
+      # The directory you want to open in VS Code.
+      - ./:/home/coder/project
+      # points to a local dir where vs code stores its data.
+      - ./code-server/data:/home/coder/.local/share/code-server
+    ports:
+      - "8443:8443"
+    command: code-server --auth password --port 8443 --disable-telemetry /home/coder/project
     restart: unless-stopped
+    network_mode: host
     environment:
-      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
-      MYSQL_DATABASE: ha_db
-      MYSQL_USER: homeassistant
-      MYSQL_PASSWORD: "${HA_MYSQL_PASSWORD}"
-      PUID: 1000
-      PGID: 1000
+      PASSWORD: "${VSCODE_PASSWORD}"
+#    user: "${LOCAL_USER}:${LOCAL_USER}"
+
+  # Portainer
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce
     volumes:
-      - ./mariadb:/config
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./portainer/data:/data"
     ports:
-      - "3306:3306"
-  nodered:
-    container_name: nodered
-    image: nodered/node-red
-    ports:
-      - "1880:1880"
-    volumes:
-      - ./nodered:/data
-    depends_on:
-      - homeassistant
-      - mosquitto
-    environment:
-      TZ: "Europe/Madrid"
+      - "9000:9000"
     restart: unless-stopped
-  mosquitto:
-    image: eclipse-mosquitto
-    container_name: mosquitto
-    restart: unless-stopped
-    ports:
-      - "1883:1883"
-    volumes:
-      - "./mosquitto/config:/mosquitto/config"
-      - "./mosquitto/data:/mosquitto/data"
-      - "./mosquitto/log:/mosquitto/log"
-    environment:
-      - TZ=Europe/Madrid
-    user: "${PUID}:${PGID}"
-  hass-configurator:
-    image: "causticlab/hass-configurator-docker:arm"
-    container_name: hass-configurator
-    restart: unless-stopped
-    ports:
-      - "3218:3218/tcp"
-    depends_on:
-      - homeassistant
-    volumes:
-      - "./configurator-config:/config"
-      - "./hass-config:/hass-config"
-    user: "${PUID}:${PGID}"
-#  portainer:
-#    ports:
-#      - "9000:9000"
-#    container_name: portainer
-#    restart: unless-stopped
-#    volumes:
-#      - "/var/run/docker.sock:/var/run/docker.sock"
-#      - "./portainer/portainer_data:/data"
-#    image: portainer/portainer-ce
+    network_mode: host
+#    user: "${LOCAL_USER}:${LOCAL_USER}"
