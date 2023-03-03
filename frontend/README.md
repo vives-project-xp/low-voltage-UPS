@@ -2,6 +2,10 @@
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
+## Preview
+
+Current version of the deployed application is available at [https://ups.robcocquyt.be](https://ups.robcocquyt.be/)
+
 ## Setup
 
 Make sure to install the dependencies:
