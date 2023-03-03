@@ -1,5 +1,5 @@
 <template>
     <section>
-      <p>This page will be displayed at the /setup route.</p>
+      <h1>This page will be displayed at the /setup route.</h1>
     </section>
 </template>
