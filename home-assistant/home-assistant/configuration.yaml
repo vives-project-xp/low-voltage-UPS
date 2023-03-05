@@ -1,11 +1,11 @@
 default_config:
 
-panel_iframe:
-  nodered:
-    title: Node-Red
-    icon: mdi:lan
-    url: http://localhost:1880/
-    require_admin: true
+# panel_iframe:
+#   nodered:
+#     title: Node-Red
+#     icon: mdi:lan
+#     url: http://localhost:1880/
+#     require_admin: true
 
-mqtt:
-  broker: http://localhost
+# mqtt:
+#   broker: http://localhost
