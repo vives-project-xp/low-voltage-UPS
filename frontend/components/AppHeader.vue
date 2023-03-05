@@ -1,5 +1,5 @@
 <template>
-  <header class="flex justify-between border-2 border-black dark:border-white">
+  <header class="flex justify-between border-2 border-black dark:border-pink-500 dark:bg-black dark:text-white">
     <p>Header</p>
     <nav>
       <ul class="flex gap-4">
