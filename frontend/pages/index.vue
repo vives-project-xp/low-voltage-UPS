@@ -1,5 +1,23 @@
 <template>
-    <section>
-      <h1 class="p-4">Welcome to the homepage</h1>
+    <section class="dark:bg-black dark:text-white">
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
     </section>
 </template>
