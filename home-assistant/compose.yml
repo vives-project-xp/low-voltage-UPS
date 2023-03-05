@@ -14,7 +14,7 @@ services:
     privileged: true
     depends_on:
       - mosquitto
-      - node-red
+      # - node-red
 
   # Mosquitto
   mosquitto:
@@ -30,19 +30,19 @@ services:
     restart: unless-stopped
 
   # Node-RED
-  node-red:
-    container_name: nodered
-    image: nodered/node-red
-    volumes:
-      - nodered:/data
-    ports:
-      - "1880:1880"
-    depends_on:
-      - homeassistant
-      - mosquitto
-    environment:
-      TZ: "Europe/Brussels"
-    restart: unless-stopped
+  # node-red:
+  #   container_name: nodered
+  #   image: nodered/node-red
+  #   volumes:
+  #     - nodered:/data
+  #   ports:
+  #     - "1880:1880"
+  #   depends_on:
+  #     - homeassistant
+  #     - mosquitto
+  #   environment:
+  #     TZ: "Europe/Brussels"
+  #   restart: unless-stopped
 
 volumes:
   homeassistant:
