@@ -7,7 +7,7 @@
         <li><NuxtLink to="/about">About</NuxtLink></li>
         <li><NuxtLink to="/setup">Setup</NuxtLink></li>
         <li><NuxtLink to="/contact">Contact</NuxtLink></li>
-        <ModeSwitch />
+        <!-- <ModeSwitch /> -->
       </ul>
     </nav>
   </header>

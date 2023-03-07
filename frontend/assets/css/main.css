@@ -2,37 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
+:root[nuxt-color-mode='dark'],header,footer,div {
+    --primary-color: #333;
+    --secondary-color: #fff;
+    --tertiary-color: #2b2b2b;
+    --default-text: #353740;
+    /* --info-text:#00ccff;
+    --danger-text:#ff0000;
+    --side-nav:var(--primary-color); */
+}
+
 :root[nuxt-color-mode='light'] {
     --primary-color: #fff;
     --secondary-color: #333;
     --tertiary-color: #aeaeae8c;
     --default-text: #ffffff;
-    --info-text:#00ccff;
+    /*--info-text:#00ccff;
     --danger-text:#ff0000;
-    /* --side-nav:#d4d4d48c; */
-}
-
-:root[nuxt-color-mode='dark'] {
-    --primary-color: #333;
-    --secondary-color: #fff;
-    --tertiary-color: #2b2b2b;
-    --default-text: #353740;
-    --info-text:#00ccff;
-    --danger-text:#ff0000;
-    /* --side-nav:var(--primary-color); */
+    --side-nav:#d4d4d48c; */
 }
 
 .primary-color {
+    border-color: var(--primary-color);
     background-color: var(--primary-color);
     color: var(--secondary-color);
 }
 
 .secondary-color {
+    border-color: var(--secondary-color);
     background-color: var(--secondary-color);
     color: var(--primary-color);
 }
 
 .tertiary-color {
+    border-color: var(--tertiary-color);
     background-color: var(--tertiary-color);
     color: var(--secondary-color);
 }
@@ -41,10 +44,10 @@
     color: var(--default-text);
 }
 
-.info-text {
+/* .info-text {
     color: var(--info-text);
 }
 
 .danger-text {
     color: var(--danger-text);
-}
+} */

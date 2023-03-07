@@ -11,6 +11,5 @@ module.exports = {
   theme: {
     extend: {},
   },
-  darkMode: ['class', '[nuxt-color-mode:"dark"]'],
   plugins: [],
 }
