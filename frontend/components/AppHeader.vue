@@ -4,10 +4,9 @@
     <nav>
       <ul class="flex gap-4">
         <li><NuxtLink to="/">Home</NuxtLink></li>
-        <li><NuxtLink to="/about">About</NuxtLink></li>
         <li><NuxtLink to="/setup">Setup</NuxtLink></li>
-        <li><NuxtLink to="/contact">Contact</NuxtLink></li>
-        <!-- <ModeSwitch /> -->
+        <li><NuxtLink to="/about">About</NuxtLink></li>
+        <ModeSwitch />
       </ul>
     </nav>
   </header>
