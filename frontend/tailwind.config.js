@@ -8,8 +8,14 @@ module.exports = {
     "./nuxt.config.{js,ts}",
     "./app.vue",
   ],
-  theme: {
-    extend: {},
+  plugins: [require("daisyui")],
+  daisyui: {
+    styled: true,
+    themes: ["light", "dark"],
+    base: true,
+    utils: true,
+    logs: true,
+    rtl: false,
+    prefix: "",
   },
-  plugins: [],
 }
