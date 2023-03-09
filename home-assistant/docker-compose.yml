@@ -6,6 +6,7 @@ services:
     volumes:
       - homeassistant:/homeassistant:/config
       - ./homeassistant/configuration.yaml:/config/configuration.yaml:ro
+      - ./homeassistant/groups.yaml:/config/groups.yaml:ro
     restart: unless-stopped
     depends_on:
       - mosquitto
