@@ -1,13 +1,28 @@
 homeassistant:
 default_config:
 
+group: !include groups.yaml
+
 mqtt:
   sensor:
-    - name: "Consumption low tarif"
-      unit_of_measurement: 'kWh'
-      state_topic: "homeassistant/battery/payload"
-      unique_id: "consumption_low_tarif"
-      value_template: "{{ value|float  }}"
+    - name: "battery status"
+      device_class: energy
+      state_topic: "homeassistant/battery/Status"
+      unique_id: "battery_status"
+      value_template: "{{ value|bool}}"
+
+    - name: "battery in use"
+      device_class: energy
+      state_topic: "homeassistant/battery/InUse"
+      unique_id: "battery_in_use"
+      value_template: "{{ value|bool  }}"
+
+    - name: "battery charge"
+      device_class: energy
+      unit_of_measurement: "%"
+      state_topic: "homeassistant/battery/Charge"
+      unique_id: "battery_charge"
+      value_template: "{{ value|float /100}}"
       
   text:
     - name: "test mqtt test"
@@ -18,6 +33,13 @@ mqtt:
       min: 1
       max: 255
 
+#   type: entities
+#   entities:
+#     - text.test_mqtt_test
+#     - sensor.battery_charge
+#     - sensor.battery_in_use
+#     - sensor.battery_status
+#   title: testing
 # # Group can't be done because of the text entity and the sensor entity are not of the same type
 # mqtt-group:
 #   name: test mqtt current

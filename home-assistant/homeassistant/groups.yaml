@@ -1,0 +1,7 @@
+test_energy:
+    name: testing
+    entities:
+    - sensor.battery_status
+    - sensor.battery_in_use
+    - sensor.battery_charge
+    - text.test_mqtt_test
