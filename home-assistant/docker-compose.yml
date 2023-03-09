@@ -1,0 +1,38 @@
+version: '3'
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+      - homeassistant:/homeassistant:/config
+      - ./homeassistant/configuration.yaml:/config/configuration.yaml:ro
+    restart: unless-stopped
+    depends_on:
+      - mosquitto
+    ports:
+      - 8123:8123
+
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    volumes:
+      - ./mosquitto/:/mosquitto/config/:ro
+      - mosquitto:/mosquitto/log/:/mosquitto/log/
+      - mosquitto:/mosquitto/data/:/mosquitto/data/
+    ports:
+      - 1883:1883
+      - 9001:9001
+      
+  # node-red:
+  #   container_name: node-red
+  #   image: nodered/node-red:latest
+  #   environment:
+  #     - TZ=Europe/Amsterdam
+  #   ports:
+  #     - "1880:1880"
+  #   volumes:
+  #     - project-exp:/node-red-data:/data    
+
+volumes:
+  homeassistant:
+  mosquitto:
