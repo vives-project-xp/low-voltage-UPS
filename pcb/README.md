@@ -9,7 +9,7 @@
 
 | Front | Back |
 |---|---|
-| ![PCB front](img/pcbFront.png) | ![PCB Back](img/pcbBack.png) |
+| ![PCB front](img/frontPCB.png) | ![PCB Back](img/backPCB.png) |
 
 ## BOM
 
