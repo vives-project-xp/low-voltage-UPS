@@ -1,5 +1,5 @@
 <template>
-  <div class="hero min-h-full" style="background-image: url(/img/head.jpg);">
+  <div class="hero h-[500px]" style="background-image: url(/img/head.jpg);">
     <div class="hero-overlay bg-opacity-60"></div>
     <div class="hero-content text-center text-neutral-content">
       <div class="max-w-md">
