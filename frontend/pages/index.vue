@@ -1,15 +1,5 @@
 <template>
-    <section class="dark:bg-black dark:text-white">
-      <HomeTitle />
-      <HomeTitle />
-      <HomeTitle />
-      <HomeTitle />
-      <HomeTitle />
-      <HomeTitle />
-      <HomeTitle />
-      <HomeTitle />
-      <HomeTitle />
-      <HomeTitle />
+    <section class="text-purple-500">
       <HomeTitle />
       <HomeTitle />
       <HomeTitle />
