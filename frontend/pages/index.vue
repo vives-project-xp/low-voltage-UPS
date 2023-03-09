@@ -1,5 +1,5 @@
 <template>
-    <section class="text-purple-500">
+    <section>
       <HomeTitle />
       <HomeTitle />
       <HomeTitle />

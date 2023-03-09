@@ -1,5 +1,5 @@
 <template>
-    <section class="text-purple-500">
+    <section>
       <h1 class="p-4 text-center">Setup</h1>
       <div class="flex flex-col p-4 gap-8">
         <div>
