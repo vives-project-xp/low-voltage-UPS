@@ -4,7 +4,7 @@
     <div class="drawer-content flex flex-col">
       <!-- Navbar -->
       <div class="flex-none sticky top-0 left-0 right-0 w-full navbar bg-base-300">
-        <div class="flex-1 px-2 mx-2">Navbar Title</div>
+        <div class="flex-1 px-2 mx-2">Low Voltage UPS</div>
         <div class="flex-none hidden lg:block">
           <ul class="menu menu-horizontal">
             <!-- Navbar menu content here -->
