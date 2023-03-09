@@ -1,5 +1,13 @@
 <template>
-    <div>
-      <h1>Welcome to the homepage</h1>
-    </div>
+    <section class="text-purple-500">
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+      <HomeTitle />
+    </section>
 </template>
