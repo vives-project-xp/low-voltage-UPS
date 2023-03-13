@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar bg-base-100">
+  <div class="navbar bg-base-300 text-base-content">
     <div class="flex-1">
       <a class="btn btn-ghost normal-case text-xl">Low Voltage UPS</a>
     </div>
