@@ -1,5 +1,5 @@
 <template>
-    <section>
-      <HomeTitle />
-    </section>
+  <section>
+    <HomeTitle />
+  </section>
 </template>
