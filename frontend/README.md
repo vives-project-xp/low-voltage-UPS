@@ -44,3 +44,10 @@ npm run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+## Used Packages
+
+- [Nuxt 3](https://v3.nuxtjs.org/)
+- [Tailwind css](https://tailwindcss.com)
+- [Daisy UI](https://daisyui.com/)
+- [Nuxt Icon](https://github.com/nuxt-modules/icon)
