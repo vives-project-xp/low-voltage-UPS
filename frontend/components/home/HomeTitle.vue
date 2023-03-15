@@ -1,5 +1,5 @@
 <template>
-  <div class="h-[500px] bg-no-repeat bg-cover bg-center bg-opacity-50 bg-[url(/img/head.jpg)]">
+  <div class="h-[500px] bg-no-repeat bg-cover bg-center bg-opacity-50 bg-[url(/img/head_dark.jpg)]">
     <div class="flex justify-center items-center h-full">
       <div class="text-center text-neutral-content">
         <div class="max-w-md">
