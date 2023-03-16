@@ -1,5 +1,11 @@
 # Circuit Board
 
+## To do
+
+1. spanning van de batterij meten>
+2. gaten in de pcb maken.
+3. soon^tm
+
 ## Schematic
 
 ![SchematicPage1](img/schematic-page-1.png)
