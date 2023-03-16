@@ -1,3 +1,5 @@
+# the battery
+# ---------------------------------------------------------------------
 sensor:
   # battery status
   - name: "battery status"
@@ -32,6 +34,8 @@ switch:
     payload_on: "reset"
     payload_off: "ok"
 
+# energy meters
+# ---------------------------------------------------------------------
 sensor:
   # total power consumption
   - name: "total power consumption"
@@ -90,3 +94,6 @@ sensor:
     state_topic: "smartmeter/production_high_tarif"
     value_template: "{{ value|float }}"
     unit_of_measurement: "kWh"
+
+# actual energy
+# ---------------------------------------------------------------------
