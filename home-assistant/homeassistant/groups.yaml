@@ -5,6 +5,7 @@ UPS_Battery_energy:
     - sensor.battery_status
     - sensor.battery_in_use
     - sensor.battery_charge
+    - sensor.battery_is_charging
 
 energy_meters:
     name: Energy Meters

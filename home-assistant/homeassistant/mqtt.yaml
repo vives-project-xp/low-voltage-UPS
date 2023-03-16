@@ -26,6 +26,13 @@ sensor:
     state_topic: "homeassistant/battery/InUse"
     value_template: "{{ value|bool  }}"
 
+  # battery in use
+  - name: "battery is charging"
+    unique_id: "battery_is_charging"
+    device_class: energy
+    state_topic: "homeassistant/battery/IsCharging"
+    value_template: "{{ value|bool  }}" 
+
   # battery charge
   - name: "battery charge"
     unique_id: "battery_charge"
