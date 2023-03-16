@@ -8,8 +8,8 @@ switch:
     retain: false
     qos: 0
     command_topic: "homeassistant/battery/reset"
-    payload_on: "reset"
-    payload_off: "ok"
+    payload_on: "reset" # reset the battery
+    payload_off: "ok"   # do nothing
 
 sensor:
   # battery status
