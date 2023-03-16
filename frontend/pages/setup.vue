@@ -3,14 +3,13 @@
     <h1 class="text-2xl font-bold p-4 text-center">Setup</h1>
     <!-- Alerts -->
     <div class="flex flex-col items-center gap-2">
-      <!-- Error alert 
+      <!-- Error alert -->
       <div v-if="error" class="alert alert-error shadow-lg w-fit max-w-full">
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
           <span>{{error.name}}: {{error.message}}</span>
         </div>
       </div>
-      -->
       <!-- Warning alert -->
       <div v-if="!isSupported"  class="alert alert-warning shadow-lg w-fit">
         <div>
@@ -71,76 +70,83 @@
   </section>
 </template>
 
-<script setup>
+<script>
+export default {
+  data: () => ({
+    isSupported: false,
+    isConnected: false,
+    device: null,
+    server: null,
+    service: null,
+    characteristic: null,
+    error: null,
+  }),
+  methods: {
+    async checkSupported() {
+      this.isSupported = await navigator.bluetooth.getAvailability()
+    },
 
-let device
-let server
-let service
-let characteristic
-let isSupported
-let isConnected
+    async requestDevice() {
+      console.log('Button clicked')
+      // Request the device
+      this.device = await navigator.bluetooth.requestDevice({
+        filters: [{ namePrefix: "UPS" }],
+        optionalServices: ["000000ff-0000-1000-8000-00805f9b34fb"],
+      })
+      // Connect to the device
+      this.server = await this.device.gatt.connect()
+      // Check if we are connected to the device
+      this.isConnected = this.device.gatt.connected
+      if (!this.isConnected) return
+      // Get the service
+      this.service = await this.server.getPrimaryService('000000ff-0000-1000-8000-00805f9b34fb')
+      // Get the characteristic
+      this.characteristic = await this.service.getCharacteristic('0000ff01-0000-1000-8000-00805f9b34fb')
+      // Log the data
+      this.logData()
+    },
 
-const requestDevice = async () => {
-  console.log('Button clicked')
-  // Check if bluetooth is supported
-  isSupported = await navigator.bluetooth.getAvailability()
-  if (!isSupported) return
-  // Request the device
-  device = await navigator.bluetooth.requestDevice({
-    filters: [{ namePrefix: "UPS" }],
-    optionalServices: ["000000ff-0000-1000-8000-00805f9b34fb"],
-  })
-  // Connect to the device
-  server = await device.gatt.connect()
-  // Check if we are connected to the device
-  isConnected = device.gatt.connected
-  if (!isConnected) return
-  // Get the service
-  service = await server.getPrimaryService('000000ff-0000-1000-8000-00805f9b34fb')
-  // Get the characteristic
-  characteristic = await service.getCharacteristic('0000ff01-0000-1000-8000-00805f9b34fb')
-  // Log the data
-  logData()
+    async setWifi(){
+      this.logData()
+      // Check if we are connected to the device
+      if (!this.isConnected) return
+      // Get the ssid and password from the input fields
+      const ssid = document.getElementById('ssid')
+      const password = document.getElementById('password')
+      // Check if the ssid and password are valid
+      if (!ssid.value || !password.value) return
+      // Write the ssid and password to the characteristic
+      await this.characteristic.writeValue(new TextEncoder().encode(`ssid:${ssid.value},password:${password.value}`))
+      this.logData()
+    },
+
+    async setMqtt(){
+      this.logData()
+      // Check if we are connected to the device
+      if (!this.isConnected) return
+      // Get the ip address from the input field
+      const ip = document.getElementById('ip')
+      // Check if the ip address is valid
+      if (!ip.value) return
+      // Write the ip address to the characteristic
+      await this.characteristic.writeValue(new TextEncoder().encode(`ip:${ip.value}`))
+      this.logData()
+    },
+
+    async logData() {
+      console.log("---------------------------------")
+      console.log('isSupported:', this.isSupported)
+      console.log('isConnected:', this.isConnected)
+      console.log('Device:', this.device)
+      console.log('Server:', this.server)
+      console.log('Service', this.service)
+      console.log('Characteristic', this.characteristic)
+      //console.log('Error:', error.value)
+      console.log("---------------------------------")
+    }
+  },
+  beforeMount() {
+    this.checkSupported()
+  },
 }
-
-const setWifi = async () => {
-  logData()
-  // Check if we are connected to the device
-  if (!isConnected) return
-  // Get the ssid and password from the input fields
-  const ssid = document.getElementById('ssid')
-  const password = document.getElementById('password')
-  // Check if the ssid and password are valid
-  if (!ssid.value || !password.value) return
-  // Write the ssid and password to the characteristic
-  await characteristic.writeValue(new TextEncoder().encode(`ssid:${ssid.value},password:${password.value}`))
-  logData()
-}
-
-const setMqtt = async () => {
-  logData()
-  // Check if we are connected to the device
-  if (!isConnected) return
-  // Get the ip address from the input field
-  const ip = document.getElementById('ip')
-  // Check if the ip address is valid
-  if (!ip.value) return
-  // Write the ip address to the characteristic
-  await characteristic.writeValue(new TextEncoder().encode(`ip:${ip.value}`))
-  logData()
-}
-
-const logData = () => {
-  console.log("---------------------------------")
-  console.log('Is supported:', isSupported.value)
-  console.log('Is connected:', isConnected.value)
-  console.log('Device:', device)
-  console.log('Server:', server)
-  console.log('Service', service)
-  console.log('Characteristic', characteristic)
-  //console.log('Error:', error.value)
-  console.log("---------------------------------")
-}
-
-
 </script>
