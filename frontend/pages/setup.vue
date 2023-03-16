@@ -75,7 +75,7 @@ import { useBluetooth } from '@vueuse/core'
 
 const {isSupported, isConnected, device, requestDevice, server, error} = useBluetooth({
   filters: [{ namePrefix: "UPS" }],
-  optionalServices: ["ups service"],
+  optionalServices: ["000000ff-0000-1000-8000-00805f9b34fb","000000ee-0000-1000-8000-00805f9b34fb"],
 })
 
 const setWifi = async () => {
@@ -87,8 +87,8 @@ const setWifi = async () => {
   // Check if the ssid and password are valid
   if (!ssid.value || !password.value) return
   // Get the service and characteristic
-  const service = await server.getPrimaryService('ups service')
-  const characteristic = await service.getCharacteristic('wifi characteristic')
+  const service = await server.getPrimaryService('000000ff-0000-1000-8000-00805f9b34fb')
+  const characteristic = await service.getCharacteristic('0000ff01-0000-1000-8000-00805f9b34fb')
   // Write the ssid and password to the characteristic
   await characteristic.writeValue(new TextEncoder().encode(`ssid:${ssid.value},password:${password.value}`))
 }
@@ -101,8 +101,8 @@ const setMqtt = async () => {
   // Check if the ip address is valid
   if (!ip.value) return
   // Get the service and characteristic
-  const service = await server.getPrimaryService('ups service')
-  const characteristic = await service.getCharacteristic('mqtt characteristic')
+  const service = await server.getPrimaryService('000000ee-0000-1000-8000-00805f9b34fb')
+  const characteristic = await service.getCharacteristic('0000ee01-0000-1000-8000-00805f9b34fb')
   // Write the ip address to the characteristic
   await characteristic.writeValue(new TextEncoder().encode(`ip:${ip.value}`))
 }
