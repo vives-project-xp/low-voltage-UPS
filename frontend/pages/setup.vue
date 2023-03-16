@@ -78,7 +78,9 @@ export default {
     device: null,
     server: null,
     service: null,
-    characteristic: null,
+    ssid_characteristic: null,
+    password_characteristic: null,
+    mqtt_characteristic: null,
     error: null,
   }),
   methods: {
@@ -100,8 +102,10 @@ export default {
       if (!this.isConnected) return
       // Get the service
       this.service = await this.server.getPrimaryService('000000ff-0000-1000-8000-00805f9b34fb')
-      // Get the characteristic
-      this.characteristic = await this.service.getCharacteristic('0000ff01-0000-1000-8000-00805f9b34fb')
+      // Get the characteristics
+      this.ssid_characteristics = await this.service.getCharacteristic('0000ff01-0000-1000-8000-00805f9b34fb')
+      this.password_characteristic = await this.service.getCharacteristic('0000ff02-0000-1000-8000-00805f9b34fb')
+      this.mqtt_characteristic = await this.service.getCharacteristic('0000ff03-0000-1000-8000-00805f9b34fb')
       // Log the data
       this.logData()
     },
@@ -115,8 +119,9 @@ export default {
       const password = document.getElementById('password')
       // Check if the ssid and password are valid
       if (!ssid.value || !password.value) return
-      // Write the ssid and password to the characteristic
-      await this.characteristic.writeValue(new TextEncoder().encode(`ssid:${ssid.value},password:${password.value}`))
+      // Write the ssid and password to the characteristics
+      await this.ssid_characteristic.writeValue(new TextEncoder().encode(ssid.value))
+      await this.password_characteristic.writeValue(new TextEncoder().encode(password.value))
       this.logData()
     },
 
@@ -129,7 +134,7 @@ export default {
       // Check if the ip address is valid
       if (!ip.value) return
       // Write the ip address to the characteristic
-      await this.characteristic.writeValue(new TextEncoder().encode(`ip:${ip.value}`))
+      await this.mqtt_characteristic.writeValue(new TextEncoder().encode(ip.value))
       this.logData()
     },
 
@@ -140,7 +145,9 @@ export default {
       console.log('Device:', this.device)
       console.log('Server:', this.server)
       console.log('Service', this.service)
-      console.log('Characteristic', this.characteristic)
+      console.log('ssid_characteristic:', this.ssid_characteristic)
+      console.log('password_characteristic:', this.password_characteristic)
+      console.log('mqtt_characteristic:', this.mqtt_characteristic)
       //console.log('Error:', error.value)
       console.log("---------------------------------")
     }
