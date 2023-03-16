@@ -5,6 +5,7 @@ UPS_Battery_energy:
     - sensor.battery_status
     - sensor.battery_in_use
     - sensor.battery_charge
+    - sensor.battery_is_charging
 
 energy_meters:
     name: Energy Meters
@@ -16,13 +17,13 @@ energy_meters:
       - sensor.production_low_tarif
       - sensor.production_high_tarif
       - sensor.gas
-      - sensor.water
+      # - sensor.water
 
 actual_energy:
     name: Actual Energy
     entities:
       - sensor.tarif
-      - sensor.active_voltage_l1
-      - sensor.active_current_l1
-      - sensor.actual_power_consumption_2
-      - sensor.actual_power_production_2
+      - sensor.actual_voltage_l1
+      - sensor.actual_current_l1
+      # - sensor.actual_power_consumption_2
+      # - sensor.actual_power_production_2
