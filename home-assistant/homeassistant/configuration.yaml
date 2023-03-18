@@ -1,6 +1,6 @@
 homeassistant:
 default_config:
 
-group: !include groups.yaml
 mqtt: !include mqtt.yaml
+group: !include groups.yaml
 automation: !include_dir_list blueprints/
