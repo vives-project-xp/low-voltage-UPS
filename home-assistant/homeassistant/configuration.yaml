@@ -3,5 +3,4 @@ default_config:
 
 group: !include groups.yaml
 mqtt: !include mqtt.yaml
-
-
+automation: !include_dir_list blueprints/
