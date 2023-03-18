@@ -1,2 +1,78 @@
 blueprint:
+  name: Actual Energy Group creation
+  description: Automate energy Actual group for smartmeter cdem
+  domain: automation
+  input:
+    group_name:
+      name: 'Name to assign to the group. Example: All Lights'
+      default: 'Actual Energy'
+    group_object_id:
+      name: 'object_id to assign to the group. Example: all_lights'
+      default: 'Actual_Energy'
 
+    search_domain:
+      name: Dynamic Domain List
+      description: "Domains to search. Format: List (-) of strings."
+      default: []
+      selector:
+        object: {}
+
+    entities_to_add:
+      name: Static Entities To Add
+      description: Select the entities to add to the group.
+      default:
+        entity_id: []
+      selector:
+        target:
+          entity: {}
+
+    entities_to_remove:
+      name: Static Entities To Remove
+      description: Select the entities to remove from the group.
+      default:
+        entity_id: []
+      selector:
+        target:
+          entity: {}
+
+    # energy_tarif:
+    #   name: tarif
+    #   description: The entity to use for the energy tarif
+    #   selector:
+    #     entity:
+    #       domain: sensor
+    #       device_class: energy
+
+    # energy_actual_voltage_l1:
+    #   name: actual_voltage_l1
+    #   description: The entity to use for the actual_voltage_l1
+    #   selector:
+    #     entity:
+    #       domain: sensor
+    #       device_class: energy
+
+    # energy_actual_current_l1:
+    #   name: actual_current_l1
+    #   description: The entity to use for the actual_current_l1
+    #   selector:
+    #     entity:
+    #       domain: sensor
+    #       device_class: energy                                         
+
+mode: single
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: event
+    event_type: call_service
+    event_data:
+      domain: group
+      service: reload
+action:
+  - service: group.set
+    data:
+      icon: mdi:lightning-bolt
+      object_id: !input group_object_id
+      name: !input group_name
+      
+        
