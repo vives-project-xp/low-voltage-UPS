@@ -105,7 +105,7 @@ export default {
       // Get the service
       this.service = await this.server.getPrimaryService('000000ff-0000-1000-8000-00805f9b34fb')
       // Get the characteristics
-      this.ssid_characteristics = await this.service.getCharacteristic('0000ff01-0000-1000-8000-00805f9b34fb')
+      this.ssid_characteristics = await this.service.getCharacteristic('0000ff08-0000-1000-8000-00805f9b34fb')
       this.password_characteristic = await this.service.getCharacteristic('0000ff02-0000-1000-8000-00805f9b34fb')
       this.mqtt_characteristic = await this.service.getCharacteristic('0000ff03-0000-1000-8000-00805f9b34fb')
       this.status_characteristic = await this.service.getCharacteristic('0000ff04-0000-1000-8000-00805f9b34fb')
