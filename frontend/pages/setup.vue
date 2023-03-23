@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h1 class="text-2xl font-bold p-4 text-center">Setup</h1>
+    <PageTitle title="Setup" />
     <!-- Alerts -->
     <div class="flex flex-col items-center gap-2">
       <!-- Error alert -->
@@ -84,16 +84,17 @@ export default {
     error: null,
   }),
   methods: {
+    // Check if bluetooth is supported (browser)
     async checkSupported() {
       this.isSupported = await navigator.bluetooth.getAvailability()
     },
 
+    // connect to the device and get the characteristics
     async requestDevice() {
       console.log('Button clicked')
       // Request the device
       this.device = await navigator.bluetooth.requestDevice({
-        acceptAllDevices: true,
-        //filters: [{ namePrefix: "UPS" }],
+        filters: [{ namePrefix: "UPS" }],
         optionalServices: ["000000ff-0000-1000-8000-00805f9b34fb"],
       })
       // Connect to the device
@@ -107,10 +108,12 @@ export default {
       this.ssid_characteristics = await this.service.getCharacteristic('0000ff01-0000-1000-8000-00805f9b34fb')
       this.password_characteristic = await this.service.getCharacteristic('0000ff02-0000-1000-8000-00805f9b34fb')
       this.mqtt_characteristic = await this.service.getCharacteristic('0000ff03-0000-1000-8000-00805f9b34fb')
+      this.status_characteristic = await this.service.getCharacteristic('0000ff04-0000-1000-8000-00805f9b34fb')
       // Log the data
       this.logData()
     },
 
+    // Write the ssid and password to the device
     async setWifi(){
       this.logData()
       // Check if we are connected to the device
@@ -121,11 +124,12 @@ export default {
       // Check if the ssid and password are valid
       if (!ssid.value || !password.value) return
       // Write the ssid and password to the characteristics
-      await this.ssid_characteristic.writeValue(new TextEncoder().encode(ssid.value))
+      await this.status_characteristic.writeValue(new TextEncoder().encode(ssid.value))
       await this.password_characteristic.writeValue(new TextEncoder().encode(password.value))
       this.logData()
     },
 
+    // Write the mqtt broker ip address to the device
     async setMqtt(){
       this.logData()
       // Check if we are connected to the device
@@ -139,6 +143,7 @@ export default {
       this.logData()
     },
 
+    // Log the data to the console
     async logData() {
       console.log("---------------------------------")
       console.log('isSupported:', this.isSupported)
@@ -149,10 +154,12 @@ export default {
       console.log('ssid_characteristic:', this.ssid_characteristic)
       console.log('password_characteristic:', this.password_characteristic)
       console.log('mqtt_characteristic:', this.mqtt_characteristic)
+      console.log('status_characteristic:', this.status_characteristic)
       //console.log('Error:', error.value)
       console.log("---------------------------------")
     }
   },
+  // run the checkSupported function when the page is mounted (created)
   beforeMount() {
     this.checkSupported()
   },
