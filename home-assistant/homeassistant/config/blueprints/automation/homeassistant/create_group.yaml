@@ -1,14 +1,28 @@
 blueprint:
-  name: Actual Energy Group creation
-  description: Automate energy Actual group for smartmeter cdem
+  name: custom Group creation
+  description: create your own custom group
   domain: automation
   input:
     group_name:
       name: 'Name to assign to the group. Example: All Lights'
-      default: 'Actual Energy'
+      default: 'Bat Energy'
     group_object_id:
       name: 'object_id to assign to the group. Example: all_lights'
-      default: 'Actual_Energy'
+      default: 'Bat_Energy'
+
+    entities_to_add:
+      name: Static Entities To Add
+      description: Select the entities to add to the group.
+      default:
+        entity_id: 
+        - switch.reset_battery
+        - sensor.battery_status
+        - sensor.battery_in_use
+        - sensor.battery_charge
+        - sensor.battery_is_charging
+      selector:
+        target:
+          entity: {}
 
     search_domain:
       name: Dynamic Domain List
@@ -16,15 +30,18 @@ blueprint:
       default: []
       selector:
         object: {}
-
-    entities_to_add:
-      name: Static Entities To Add
-      description: Select the entities to add to the group.
-      default:
-        entity_id: []
+    search_includes:
+      name: Dynamic Include List
+      description: "Entity object ID's to include. Format: List (-) of strings."
+      default: []
       selector:
-        target:
-          entity: {}
+        object: {}
+    search_excludes:
+      name: Dynamic Exclude List
+      description: "Entity object ID's to exclude. Format: List (-) of strings."
+      default: []
+      selector:
+        object: {}
 
     entities_to_remove:
       name: Static Entities To Remove
@@ -34,55 +51,38 @@ blueprint:
       selector:
         target:
           entity: {}
-
-    # energy_tarif:
-    #   name: tarif
-    #   description: The entity to use for the energy tarif
-    #   selector:
-    #     entity:
-    #       domain: sensor
-    #       device_class: energy
-
-    # energy_actual_voltage_l1:
-    #   name: actual_voltage_l1
-    #   description: The entity to use for the actual_voltage_l1
-    #   selector:
-    #     entity:
-    #       domain: sensor
-    #       device_class: energy
-
-    # energy_actual_current_l1:
-    #   name: actual_current_l1
-    #   description: The entity to use for the actual_current_l1
-    #   selector:
-    #     entity:
-    #       domain: sensor
-    #       device_class: energy                                         
-
+                                    
 mode: single
 trigger:
-  homeassistant_start:
-  event:
+  - platform: event
     event_type: call_service
     event_data:
+      domain: group
       service: group.reload
+
+variables:
+  domains: !input 'search_domain'
+  includes: !input 'search_includes'
+  excludes: !input 'search_excludes'
+  add: !input 'entities_to_add'
+  rem: !input 'entities_to_remove'
+
 action:
-  service: group.set
+  service: group.create
   data:
-    icon: mdi:lightning-bolt
+    domain: group
+    icon: mdi:battery
     object_id: !input group_object_id
     name: !input group_name
-      
-# description: ""
-# mode: single
-# trigger:
-#   - platform: event
-#     event_type: call_service
-#     event_data:
-#       service: group.reload
-# condition: []
-# action:
-#   - service: group.set
-#     data:
-#       object_id: "!input group_object_id"
-#       name: "!input group_name"        
+    entities: >
+      {%- set entities = states | selectattr('domain','in', domains) | list if domains else states | list if ( includes or excludes ) %}
+      {%- set ns = namespace(include=[], exclude=[]) %}
+      {%- for item in includes %}
+        {%- set ns.include = ns.include + entities | selectattr('object_id', 'search', item) | list %}
+      {%- endfor %}
+      {%- for item in excludes %}
+        {%- set ns.exclude = ns.exclude + entities | selectattr('object_id', 'search', item) | list %}
+      {%- endfor %}
+      {%- set entities = entities | select('in', ns.include if includes else entities ) | reject('in', ns.exclude) | map(attribute="entity_id") | list %}
+      {%- set entities = ( entities + add.entity_id | list ) | reject('in', rem.entity_id) | list %}
+      {{ entities | unique | sort }}        
