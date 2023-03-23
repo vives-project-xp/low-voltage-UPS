@@ -92,7 +92,8 @@ export default {
       console.log('Button clicked')
       // Request the device
       this.device = await navigator.bluetooth.requestDevice({
-        filters: [{ namePrefix: "UPS" }],
+        acceptAllDevices: true,
+        //filters: [{ namePrefix: "UPS" }],
         optionalServices: ["000000ff-0000-1000-8000-00805f9b34fb"],
       })
       // Connect to the device
