@@ -70,98 +70,97 @@
   </section>
 </template>
 
-<script>
-export default {
-  data: () => ({
-    isSupported: false,
-    isConnected: false,
-    device: null,
-    server: null,
-    service: null,
-    ssid_characteristic: null,
-    password_characteristic: null,
-    mqtt_characteristic: null,
-    error: null,
-  }),
-  methods: {
-    // Check if bluetooth is supported (browser)
-    async checkSupported() {
-      this.isSupported = await navigator.bluetooth.getAvailability()
-    },
+<script setup>
+import { onMounted } from 'vue';
 
-    // connect to the device and get the characteristics
-    async requestDevice() {
-      console.log('Button clicked')
-      // Request the device
-      this.device = await navigator.bluetooth.requestDevice({
-        filters: [{ namePrefix: "UPS" }],
-        optionalServices: ["000000ff-0000-1000-8000-00805f9b34fb"],
-      })
-      // Connect to the device
-      this.server = await this.device.gatt.connect()
-      // Check if we are connected to the device
-      this.isConnected = this.device.gatt.connected
-      if (!this.isConnected) return
-      // Get the service
-      this.service = await this.server.getPrimaryService('000000ff-0000-1000-8000-00805f9b34fb')
-      // Get the characteristics
-      this.ssid_characteristics = await this.service.getCharacteristic('0000ff08-0000-1000-8000-00805f9b34fb')
-      this.password_characteristic = await this.service.getCharacteristic('0000ff02-0000-1000-8000-00805f9b34fb')
-      this.mqtt_characteristic = await this.service.getCharacteristic('0000ff03-0000-1000-8000-00805f9b34fb')
-      this.status_characteristic = await this.service.getCharacteristic('0000ff04-0000-1000-8000-00805f9b34fb')
-      // Log the data
-      this.logData()
-    },
+const isSupported = ref(false)
+const isConnected = ref(false)
+const device = ref()
+const server = ref()
+const service = ref()
+const ssid_characteristic = ref()
+const password_characteristic = ref()
+const mqtt_characteristic = ref()
+const status_characteristic = ref()
+const error = ref()
 
-    // Write the ssid and password to the device
-    async setWifi(){
-      this.logData()
-      // Check if we are connected to the device
-      if (!this.isConnected) return
-      // Get the ssid and password from the input fields
-      const ssid = document.getElementById('ssid')
-      const password = document.getElementById('password')
-      // Check if the ssid and password are valid
-      if (!ssid.value || !password.value) return
-      // Write the ssid and password to the characteristics
-      await this.status_characteristic.writeValue(new TextEncoder().encode(ssid.value))
-      await this.password_characteristic.writeValue(new TextEncoder().encode(password.value))
-      this.logData()
-    },
+// Check if bluetooth is supported (browser)
+const checkSupported = async () => {
+  isSupported.value = await navigator.bluetooth.getAvailability()
+}
 
-    // Write the mqtt broker ip address to the device
-    async setMqtt(){
-      this.logData()
-      // Check if we are connected to the device
-      if (!this.isConnected) return
-      // Get the ip address from the input field
-      const ip = document.getElementById('ip')
-      // Check if the ip address is valid
-      if (!ip.value) return
-      // Write the ip address to the characteristic
-      await this.mqtt_characteristic.writeValue(new TextEncoder().encode(ip.value))
-      this.logData()
-    },
+// run the checkSupported function when the page is mounted (created)
+onMounted(() => {
+  checkSupported()
+});
 
-    // Log the data to the console
-    async logData() {
-      console.log("---------------------------------")
-      console.log('isSupported:', this.isSupported)
-      console.log('isConnected:', this.isConnected)
-      console.log('Device:', this.device)
-      console.log('Server:', this.server)
-      console.log('Service', this.service)
-      console.log('ssid_characteristic:', this.ssid_characteristic)
-      console.log('password_characteristic:', this.password_characteristic)
-      console.log('mqtt_characteristic:', this.mqtt_characteristic)
-      console.log('status_characteristic:', this.status_characteristic)
-      //console.log('Error:', error.value)
-      console.log("---------------------------------")
-    }
-  },
-  // run the checkSupported function when the page is mounted (created)
-  beforeMount() {
-    this.checkSupported()
-  },
+// connect to the device and get the characteristics
+const requestDevice = async () => {
+  console.log('Button clicked')
+  // Request the device
+  device.value = await navigator.bluetooth.requestDevice({
+    filters: [{ namePrefix: "UPS" }],
+    optionalServices: ["000000ff-0000-1000-8000-00805f9b34fb"],
+  })
+  // Connect to the device
+  server.value = await device.value.gatt.connect()
+  // Check if we are connected to the device
+  isConnected.value = device.value.gatt.connected
+  if (!isConnected.value) return
+  // Get the service
+  service.value = await server.value.getPrimaryService('000000ff-0000-1000-8000-00805f9b34fb')
+  // Get the characteristics
+  ssid_characteristic.value = await service.value.getCharacteristic('0000ff01-0000-1000-8000-00805f9b34fb')
+  password_characteristic.value = await service.value.getCharacteristic('0000ff02-0000-1000-8000-00805f9b34fb')
+  mqtt_characteristic.value = await service.value.getCharacteristic('0000ff03-0000-1000-8000-00805f9b34fb')
+  status_characteristic.value = await service.value.getCharacteristic('0000ff04-0000-1000-8000-00805f9b34fb')
+  // Log the data
+  logData()
+}
+
+// Write the ssid and password to the device
+const setWifi = async () => {
+  logData()
+  // Check if we are connected to the device
+  if (!isConnected.value) return
+  // Get the ssid and password from the input fields
+  const ssid = document.getElementById('ssid')
+  const password = document.getElementById('password')
+  // Check if the ssid and password are valid
+  if (!ssid.value || !password.value) return
+  // Write the ssid and password to the characteristics
+  await ssid_characteristic.value.writeValue(new TextEncoder().encode(ssid.value))
+  await password_characteristic.value.writeValue(new TextEncoder().encode(password.value))
+  logData()
+}
+
+// Write the mqtt broker ip to the device
+const setMqtt = async () => {
+  logData()
+  // Check if we are connected to the device
+  if (!isConnected.value) return
+  // Get the ip from the input field
+  const ip = document.getElementById('ip')
+  // Check if the ip is valid
+  if (!ip.value) return
+  // Write the ip to the characteristic
+  await mqtt_characteristic.value.writeValue(new TextEncoder().encode(ip.value))
+  logData()
+}
+
+// Log the data to the console
+const logData = async () => {
+  console.log("---------------------------------")
+  console.log('isSupported:', isSupported.value)
+  console.log('isConnected:', isConnected.value)
+  console.log('Device:', device.value)
+  console.log('Server:', server.value)
+  console.log('Service', service.value)
+  console.log('ssid_characteristic:', ssid_characteristic.value)
+  console.log('password_characteristic:', password_characteristic.value)
+  console.log('mqtt_characteristic:', mqtt_characteristic.value)
+  console.log('status_characteristic:', status_characteristic.value)
+  //console.log('Error:', error.value)
+  console.log("---------------------------------")
 }
 </script>
