@@ -9,7 +9,7 @@ switch:
     qos: 0
     command_topic: "homeassistant/battery/reset"
     payload_on:  "1" # reset the battery
-    payload_off: "0"   # do nothing
+    payload_off: "0"   # do nothing   
 
 sensor:
   # battery status
@@ -38,7 +38,7 @@ sensor:
     unique_id: "battery_charge"
     device_class: battery
     state_topic: "homeassistant/battery/Charge"
-    value_template: "{{ value|float /100}}"
+    value_template: "{{ value|float}}"
     unit_of_measurement: "%"
 
 # energy meters
