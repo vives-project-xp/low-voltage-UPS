@@ -61,18 +61,28 @@ blueprint:
 
 mode: single
 trigger:
-  - platform: homeassistant
-    event: start
-  - platform: event
+  homeassistant_start:
+  event:
     event_type: call_service
     event_data:
-      domain: group
-      service: reload
+      service: group.reload
 action:
-  - service: group.set
-    data:
-      icon: mdi:lightning-bolt
-      object_id: !input group_object_id
-      name: !input group_name
+  service: group.set
+  data:
+    icon: mdi:lightning-bolt
+    object_id: !input group_object_id
+    name: !input group_name
       
-        
+# description: ""
+# mode: single
+# trigger:
+#   - platform: event
+#     event_type: call_service
+#     event_data:
+#       service: group.reload
+# condition: []
+# action:
+#   - service: group.set
+#     data:
+#       object_id: "!input group_object_id"
+#       name: "!input group_name"        
