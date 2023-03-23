@@ -36,14 +36,13 @@ sensor:
   # battery charge
   - name: "battery charge"
     unique_id: "battery_charge"
-    device_class: energy
+    device_class: battery
     state_topic: "homeassistant/battery/Charge"
     value_template: "{{ value|float /100}}"
     unit_of_measurement: "%"
 
 # energy meters
 # ---------------------------------------------------------------------
-
   # total power consumption
   - name: "total power consumption"
     unique_id: "total_power_consumption"
@@ -113,7 +112,6 @@ sensor:
 
 # actual energy
 # ---------------------------------------------------------------------
-
   # tarif
   - name: tarif
     unique_id: "tarif"
