@@ -13,6 +13,7 @@ homeassistant/config/home-assistant.log.1
 homeassistant/config/home-assistant_v2.db-wal
 homeassistant/config/home-assistant_v2.db-shm
 homeassistant/config/secrets.yaml
+homeassistant/config/image/*
 
 # homeassistant custom components
 homeassistant/config/custom_components/hacs/*
