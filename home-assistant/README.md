@@ -70,8 +70,8 @@ switch:
 
 sensor:
   # battery status
-  - name: "battery status"
-    unique_id: "battery_status"
+  - name: "battery present"
+    unique_id: "battery_present"
     device_class: energy
     state_topic: "homeassistant/battery/Status"
     value_template: "{{ value|bool}}"
@@ -108,7 +108,7 @@ UPS_Battery_energy:
   name: Battery energy
   entities:
     - switch.reset_battery
-    - sensor.battery_status
+    - sensor.battery_present
     - sensor.battery_in_use
     - sensor.battery_charge
     - sensor.battery_is_charging
