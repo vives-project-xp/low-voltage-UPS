@@ -8,7 +8,7 @@ Dependencies:
 - Docker
 - Docker Compose
 - **required** [hacs](https://hacs.xyz/docs/configuration/basic/#device-registration) 
-- **required** [hacs-integrations](https://github.com/hacs/integration)
+- **required** [dwains-lovelace-dashboard](https://dwainscheeren.github.io/dwains-lovelace-dashboard/v3/information/installation.html#installation)
 
 To install and run this project, you need to follow the steps below:
 1. Clone the repository using the following command:
