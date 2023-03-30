@@ -23,7 +23,7 @@ UPS_Battery_energy:
   name: Battery energy
   entities:
     - switch.reset_battery
-    - sensor.battery_status
+    - sensor.battery_present
     - sensor.battery_in_use
     - sensor.battery_charge
     - sensor.battery_is_charging
