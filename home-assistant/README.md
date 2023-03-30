@@ -7,6 +7,8 @@ It is designed to enable the monitoring and control of different home appliances
 Dependencies:
 - Docker
 - Docker Compose
+- **required** [hacs](https://hacs.xyz/docs/configuration/basic/#device-registration) 
+- **required** [hacs-integrations](https://github.com/hacs/integration)
 
 To install and run this project, you need to follow the steps below:
 1. Clone the repository using the following command:
