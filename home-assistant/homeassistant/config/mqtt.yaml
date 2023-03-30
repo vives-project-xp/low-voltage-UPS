@@ -13,7 +13,8 @@ switch:
 
 sensor:
   # battery status
-  - name: "battery present"
+  - name: "battery status"
+    alias: "battery present"
     unique_id: "battery_status"
     device_class: energy
     state_topic: "homeassistant/battery/Status"
