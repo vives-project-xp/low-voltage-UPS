@@ -1,0 +1,10 @@
+sensor.battery_status:
+  sort_order: 1
+sensor.battery_in_use:
+  sort_order: 2
+sensor.battery_is_charging:
+  sort_order: 3
+sensor.battery_charge:
+  sort_order: 4
+switch.reset_battery:
+  sort_order: 5
