@@ -1,0 +1,11 @@
+{
+    "domain": "cdem",
+    "name": "Connected Digital Energy Meter",
+    "codeowners": ["@Robbedoes24"],
+    "config_flow": true,
+    "dependencies": ["mqtt"],
+    "documentation": "https://www.cdem.be",
+    "iot_class": "local_push",
+    "mqtt": ["dsmr/#"],
+    "version": "0.0.1"
+}
