@@ -1,329 +1,141 @@
-"""Support for CDEM through MQTT."""
-from __future__ import annotations
+"""Platform for sensor integration."""
+# This file shows the setup for the sensors associated with the cover.
+# They are setup in the same way with the call to the async_setup_entry function
+# via HA from the module __init__. Each sensor has a device_class, this tells HA how
+# to display it in the UI (for know types). The unit_of_measurement property tells HA
+# what the unit is, so it can display the correct range. For predefined types (such as
+# battery), the unit_of_measurement should match what's expected.
+import random
 
-from collections.abc import Callable
-from dataclasses import dataclass
-import logging
-
-from homeassistant.components import mqtt
-from homeassistant.components.sensor import (
-    SensorDeviceClass,
-    SensorEntityDescription,
-    SensorStateClass,
-    SensorEntity,
-)
 from homeassistant.const import (
-    UnitOfElectricCurrent,
-    UnitOfElectricPotential,
-    UnitOfEnergy,
-    UnitOfPower,
-    UnitOfVolume,
+    PERCENTAGE,
 )
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.util import slugify, dt as dt_util
+from homeassistant.components.sensor import SensorDeviceClass
+from homeassistant.helpers.entity import Entity, DeviceInfo
+from homeassistant.core import HomeAssistant
 
-from .const import TOPIC_PREFIX
-
-_LOGGER = logging.getLogger(__name__)
+from .const import DOMAIN
 
 
-def tariff_transform(value):
-    """Transform tariff from number to description."""
-    if value == "1.00":
-        return "High"
-    if value == "2.00":
-        return "Low"
-    return "Unknown"
-
-
-def uptime_transform(value):
-    """ Transform uptime from '..d ..h ..m ..s ..ms' to timestamp """
-    return dt_util.parse_datetime(value)
-
-
-@dataclass
-class CDEMSensorEntityDescription(SensorEntityDescription):
-    """Sensor entity description for CDEM."""
-
-    state: Callable | None = None
-
-
-SENSORS: tuple[CDEMSensorEntityDescription, ...] = (
-# Meter data
-    # Cumulated electricity consumption (high tariff)
-    CDEMSensorEntityDescription(
-        key="consumption_high_tarif",
-        translation_key="consumption_high_tarif",
-        device_class=SensorDeviceClass.ENERGY,
-        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
-        state_class=SensorStateClass.TOTAL_INCREASING,
-    ),
-    # Cumulated electricity consumption (low tariff)
-    CDEMSensorEntityDescription(
-        key="consumption_low_tarif",
-        translation_key="consumption_low_tarif",
-        device_class=SensorDeviceClass.ENERGY,
-        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
-        state_class=SensorStateClass.TOTAL_INCREASING,
-    ),
-    # Cumulated electricity production (high tariff)
-    CDEMSensorEntityDescription(
-        key="production_high_tarif",
-        translation_key="production_high_tarif",
-        device_class=SensorDeviceClass.ENERGY,
-        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
-        state_class=SensorStateClass.TOTAL_INCREASING,
-    ),
-    # Cumulated electricity production (low tariff)
-    CDEMSensorEntityDescription(
-        key="production_low_tarif",
-        translation_key="production_low_tarif",
-        device_class=SensorDeviceClass.ENERGY,
-        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
-        state_class=SensorStateClass.TOTAL_INCREASING,
-    ),
-    # Instantaneous consumption over all phases
-    CDEMSensorEntityDescription(
-        key="total_power_consumption",
-        translation_key="total_power_consumption",
-        device_class=SensorDeviceClass.POWER,
-        native_unit_of_measurement=UnitOfPower.KILO_WATT,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
-    # Instantaneous production over all phases
-    CDEMSensorEntityDescription(
-        key="total_power_production",
-        translation_key="total_power_production",
-        device_class=SensorDeviceClass.POWER,
-        native_unit_of_measurement=UnitOfPower.KILO_WATT,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
-    # Instantaneous voltage L1
-    CDEMSensorEntityDescription(
-        key="actual_voltage_l1",
-        translation_key="actual_voltage_l1",
-        device_class=SensorDeviceClass.VOLTAGE,
-        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
-    # Instantaneous voltage L2
-    CDEMSensorEntityDescription(
-        key="actual_voltage_l2",
-        translation_key="actual_voltage_l2",
-        device_class=SensorDeviceClass.VOLTAGE,
-        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
-    # Instantaneous voltage L3
-    CDEMSensorEntityDescription(
-        key="actual_voltage_l3",
-        translation_key="actual_voltage_l3",
-        device_class=SensorDeviceClass.VOLTAGE,
-        native_unit_of_measurement=UnitOfElectricPotential.VOLT,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
-    # Instantaneous current L1
-    CDEMSensorEntityDescription(
-        key="actual_current_l1",
-        translation_key="actual_current_l1",
-        device_class=SensorDeviceClass.CURRENT,
-        native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
-    # Instantaneous current L2
-    CDEMSensorEntityDescription(
-        key="actual_current_l2",
-        translation_key="actual_current_l2",
-        device_class=SensorDeviceClass.CURRENT,
-        native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
-    # Instantaneous current L3
-    CDEMSensorEntityDescription(
-        key="actual_current_l3",
-        translation_key="actual_current_l3",
-        device_class=SensorDeviceClass.CURRENT,
-        native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
-    # Instantaneous active power production L1
-    CDEMSensorEntityDescription(
-        key="l1_power_production",
-        translation_key="l1_power_production",
-        device_class=SensorDeviceClass.POWER,
-        native_unit_of_measurement=UnitOfPower.KILO_WATT,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
-    # Instantaneous active power production L2
-    CDEMSensorEntityDescription(
-        key="l2_power_production",
-        translation_key="l2_power_production",
-        device_class=SensorDeviceClass.POWER,
-        native_unit_of_measurement=UnitOfPower.KILO_WATT,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
-    # Instantaneous active power production L3
-    CDEMSensorEntityDescription(
-        key="l3_power_production",
-        translation_key="l3_power_production",
-        device_class=SensorDeviceClass.POWER,
-        native_unit_of_measurement=UnitOfPower.KILO_WATT,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
-
-    # Instantaneous active power consumption L1
-    CDEMSensorEntityDescription(
-        key="l1_power_consumption",
-        translation_key="l1_power_consumption",
-        device_class=SensorDeviceClass.POWER,
-        native_unit_of_measurement=UnitOfPower.KILO_WATT,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
-    # Instantaneous active power consumption L2
-    CDEMSensorEntityDescription(
-        key="l2_power_consumption",
-        translation_key="l2_power_consumption",
-        device_class=SensorDeviceClass.POWER,
-        native_unit_of_measurement=UnitOfPower.KILO_WATT,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
-    # Instantaneous active power consumption L3
-    CDEMSensorEntityDescription(
-        key="l3_power_consumption",
-        translation_key="l3_power_consumption",
-        device_class=SensorDeviceClass.POWER,
-        native_unit_of_measurement=UnitOfPower.KILO_WATT,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
-    # Tariff indicator (1=high, 2=low)
-    CDEMSensorEntityDescription(
-        key="actual_tarif",
-        translation_key="actual_tarif",
-        device_class=SensorDeviceClass.ENUM,
-        options=["Low", "High", "Unknown"],
-        icon="mdi:theme-light-dark",
-        state=tariff_transform,
-    ),
-    # Total gas consumption
-   CDEMSensorEntityDescription(
-        key="gas_meter_m3",
-        translation_key="gas_meter_m3",
-        icon="mdi:fire",
-        native_unit_of_measurement=UnitOfVolume.CUBIC_METERS,
-        state_class=SensorStateClass.TOTAL_INCREASING,
-    ),
-# CDEM Stats
-    # Decoded p1 telegrams (by CDEM)
-    CDEMSensorEntityDescription(
-        key="decoded",
-        translation_key="decoded",
-        entity_registry_enabled_default=False,
-
-    ),
-    # Timeouts
-    CDEMSensorEntityDescription(
-        key="timeouts",
-        translation_key="timeouts",
-        entity_registry_enabled_default=False,
-
-    ),
-    # Published
-    CDEMSensorEntityDescription(
-        key="published",
-        translation_key="published",
-        entity_registry_enabled_default=False,
-
-    ),
-    # crc errors
-    CDEMSensorEntityDescription(
-        key="crcerrors",
-        translation_key="crcerrors",
-        entity_registry_enabled_default=False,
-
-    ),
-    # Uptime
-    CDEMSensorEntityDescription(
-        key="uptime",
-        translation_key="uptime",
-        entity_registry_enabled_default=False,
-        device_class=SensorDeviceClass.TIMESTAMP,
-        state=uptime_transform,
-    ),
-# Device details
-    # IP address
-    CDEMSensorEntityDescription(
-        key="ip",
-        translation_key="ip",
-        entity_registry_enabled_default=False,
-    ),
-    # MAC address
-    CDEMSensorEntityDescription(
-        key="mac",
-        translation_key="mac",
-        entity_registry_enabled_default=False,
-    ),
-    # Firmware version
-    CDEMSensorEntityDescription(
-        key="lib-version",
-        translation_key="lib-version",
-        entity_registry_enabled_default=False,
-    ),
-    # Pcb version
-    CDEMSensorEntityDescription(
-        key="pcb-version",
-        translation_key="pcb-version",
-        entity_registry_enabled_default=False,
-    ),
-)
-
-
+# See cover.py for more details.
+# Note how both entities for each roller sensor (battry and illuminance) are added at
+# the same time to the same list. This way only a single async_add_devices call is
+# required.
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry,
-    async_add_entities: AddEntitiesCallback,
-) -> None:
-    """Set up CDEM sensors from config entry."""
+    config_entry,
+    async_add_entities
+):
+    """Add sensors for passed config_entry in HA."""
+    cdem = hass.data[DOMAIN][config_entry.entry_id]
 
-    for description in SENSORS:
-        async_add_entities([CDEMSensor(description, config_entry)])
+    new_devices = []
+    new_devices.append(BatterySensor(cdem))
+    new_devices.append(IlluminanceSensor(cdem))
+
+    if new_devices:
+        async_add_entities(new_devices)
 
 
-class CDEMSensor(SensorEntity):
-    """Representation of a CDEM that is updated via MQTT."""
+# This base class shows the common properties and methods for a sensor as used in this
+# example. See each sensor for further details about properties and methods that
+# have been overridden.
+class SensorBase(Entity):
+    """Base representation of a Hello World Sensor."""
 
-    _attr_has_entity_name = True
-    entity_description: CDEMSensorEntityDescription
+    should_poll = False
 
-    def __init__(
-        self,
-        description: CDEMSensorEntityDescription,
-        config_entry: ConfigEntry,
-    ) -> None:
+    def __init__(self, cdem) -> None:
         """Initialize the sensor."""
-        self.entity_description = description
+        self._cdem = cdem
 
-        slug = slugify(description.key.replace("/", "_"))
-        self.entity_id = f"sensor.{slug}"
-        self._attr_unique_id = f"{config_entry.entry_id}-{slug}"
+    # To link this entity to the cover device, this property must return an
+    # identifiers value matching that used in the cover, but no other information such
+    # as name. If name is returned, this entity will then also become a device in the
+    # HA UI.
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Information about this entity/device."""
+        return {
+            "identifiers": {(DOMAIN, self._cdem.cdem_id)},
+            # If desired, the name for the device could be different to the entity
+            "name": self.name,
+            "sw_version": self._cdem.firmware_version,
+            "model": self._cdem.model,
+            "manufacturer": self._cdem.manufacturer,
+        }
 
-    async def async_added_to_hass(self) -> None:
-        """Subscribe to MQTT events."""
+    # This property is important to let HA know if this entity is online or not.
+    # If an entity is offline (return False), the UI will refelect this.
+    @property
+    def available(self) -> bool:
+        """Return True if cdem is available."""
+        return self._cdem.online
 
-        @callback
-        def message_received(message):
-            """Handle new MQTT messages."""
-            if message.payload == "":
-                self._attr_native_value = None
-            elif self.entity_description.state is not None:
-                # Perform optional additional parsing
-                self._attr_native_value = self.entity_description.state(message.payload)
-            else:
-                self._attr_native_value = message.payload
+    async def async_added_to_hass(self):
+        """Run when this Entity has been added to HA."""
+        # Sensors should also register callbacks to HA when their state changes
+        self._cdem.register_callback(self.async_write_ha_state)
 
-            self.async_write_ha_state()
+    async def async_will_remove_from_hass(self):
+        """Entity being removed from hass."""
+        # The opposite of async_added_to_hass. Remove any registered call backs here.
+        self._cdem.remove_callback(self.async_write_ha_state)
 
-        await mqtt.async_subscribe(
-            self.hass, TOPIC_PREFIX + '/' + self.entity_description.key, message_received, 1
-        )
+class BatterySensor(SensorBase):
+    """Representation of a Sensor."""
+
+    # The class of this device. Note the value should come from the homeassistant.const
+    # module. More information on the available devices classes can be seen here:
+    # https://developers.home-assistant.io/docs/core/entity/sensor
+    device_class = SensorDeviceClass.BATTERY
+
+    # The unit of measurement for this entity. As it's a SensorDeviceClass.BATTERY, this
+    # should be PERCENTAGE. A number of units are supported by HA, for some
+    # examples, see:
+    # https://developers.home-assistant.io/docs/core/entity/sensor#available-device-classes
+    _attr_unit_of_measurement = PERCENTAGE
+
+    def __init__(self, cdem) -> None:
+        """Initialize the sensor."""
+        super().__init__(cdem)
+
+        # As per the sensor, this must be a unique value within this domain. This is done
+        # by using the device ID, and appending "_battery"
+        self._attr_unique_id = f"{self._cdem.cdem_id}_battery"
+
+        # The name of the entity
+        self._attr_name = f"{self._cdem.name} Battery"
+
+        self._state = random.randint(0, 100)
+
+    # The value of this sensor. As this is a SensorDeviceClass.BATTERY, this value must be
+    # the battery level as a percentage (between 0 and 100)
+    @property
+    def state(self):
+        """Return the state of the sensor."""
+        return self._cdem.battery_level
+
+
+# This is another sensor, but more simple compared to the battery above. See the
+# comments above for how each field works.
+class IlluminanceSensor(SensorBase):
+    """Representation of a Sensor."""
+
+    device_class = SensorDeviceClass.ILLUMINANCE
+    _attr_unit_of_measurement = "lx"
+
+    def __init__(self, cdem) -> None:
+        """Initialize the sensor."""
+        super().__init__(cdem)
+        # As per the sensor, this must be a unique value within this domain. This is done
+        # by using the device ID, and appending "_battery"
+        self._attr_unique_id = f"{self._cdem.cdem_id}_illuminance"
+
+        # The name of the entity
+        self._attr_name = f"{self._cdem.name} Illuminance"
+
+    @property
+    def state(self):
+        """Return the state of the sensor."""
+        return self._cdem.illuminance
