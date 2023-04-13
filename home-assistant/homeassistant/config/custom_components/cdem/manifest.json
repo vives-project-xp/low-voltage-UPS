@@ -6,6 +6,6 @@
     "dependencies": ["mqtt"],
     "documentation": "https://www.cdem.be",
     "iot_class": "local_push",
-    "mqtt": ["dsmr/#"],
-    "version": "0.0.1"
-}
+    "mqtt": ["iot/myhome/cdem/#"],
+    "version": "0.0.2"
+  }
