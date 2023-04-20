@@ -8,25 +8,14 @@ module.exports = {
     "./nuxt.config.{js,ts}",
     "./app.vue",
   ],
+  theme: {
+    extend: {},
+  },
+  darkMode: 'class',
   plugins: [require("daisyui")],
   daisyui: {
     styled: true,
-    themes: [
-      {
-        light: {
-          ...require("daisyui/src/colors/themes")["[data-theme=light]"],
-          "base-content": "#000000",
-          "neutral-content": "#ffffff",
-        },
-      }, 
-      {
-        dark: {
-          ...require("daisyui/src/colors/themes")["[data-theme=dark]"],
-          "base-content": "#ffffff",
-          "neutral-content": "#ffffff",
-        },
-      },
-    ],
+    themes: ["light", "dark"],
     base: true,
     utils: true,
     logs: true,
