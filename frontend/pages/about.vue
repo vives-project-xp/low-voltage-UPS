@@ -33,7 +33,7 @@
   const team = ref([
     {id: 0, name: 'Axel', avatar: 'https://picsum.photos/id/153/200', job: 'Hardware & Firmware'},
     {id: 1, name: 'Maxime', avatar: 'https://picsum.photos/id/172/200', job: 'Firmware'},
-    {id: 2, name: 'Rob', avatar: 'https://picsum.photos/id/137/200', job: 'Web Site'},
-    {id: 3, name: 'Tibo', avatar: 'https://picsum.photos/id/155/200', job: 'Home Assistant Integration'},
+    {id: 2, name: 'Rob', avatar: 'https://picsum.photos/id/137/200', job: 'Website , Home Assistant device Integration'},
+    {id: 3, name: 'Tibo', avatar: 'https://picsum.photos/id/155/200', job: 'Home Assistant Integration , Website'},
   ])
 </script>
