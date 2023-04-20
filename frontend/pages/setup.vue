@@ -249,6 +249,7 @@ const setMqtt = async () => {
     new TextEncoder().encode(ip.value, ":", port.value)
   );
   logData();
+  // DisconnectDevice()
 };
 
 // Log the data to the console
