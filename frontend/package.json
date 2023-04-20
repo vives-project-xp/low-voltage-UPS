@@ -10,12 +10,13 @@
   "devDependencies": {
     "@vueuse/core": "^9.13.0",
     "@vueuse/nuxt": "^9.13.0",
+    "@nuxtjs/color-mode": "^3.2.0",
+    "@nuxtjs/tailwindcss": "^6.4.1",
     "autoprefixer": "^10.4.13",
+    "daisyui": "^2.51.3",
     "nuxt": "^3.2.3",
-    "postcss": "^8.4.21",
-    "tailwindcss": "^3.2.7"
-  },
-  "dependencies": {
-    "daisyui": "^2.51.3"
+    "nuxt-icons": "^3.1.0",
+    "postcss": "^8.4.21"
   }
+
 }
