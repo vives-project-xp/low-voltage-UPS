@@ -47,18 +47,8 @@
       <!-- Success alert -->
       <div v-if="isConnected" class="alert alert-success shadow-lg w-2/4">
         <div>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="stroke-current flex-shrink-0 h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24" >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <span>Succesfully connected to {{ device.name }}</span>
         </div>
@@ -70,20 +60,10 @@
       <div class="flex flex-col gap-4 w-1/4">
         <h2 class="text-2xl font-bold text-center">1. Bluetooth</h2>
         <div class="flex flex-col gap-2">
-          <button
-            v-if="!isConnected"
-            id="BtnConnect"
-            class="btn btn-primary w-full"
-            @click="requestDevice()"
-          >
+          <button v-if="!isConnected" id="BtnConnect" class="btn btn-primary w-full" @click="requestDevice()" >
             Connect
           </button>
-          <button
-            v-if="isConnected"
-            id="BtnConnect"
-            class="btn btn-primary w-full"
-            @click="DisconnectDevice()"
-          >
+          <button v-if="isConnected" id="BtnConnect" class="btn btn-primary w-full" @click="DisconnectDevice()" >
             DisConnect
           </button>
         </div>
@@ -92,18 +72,14 @@
       <div class="flex flex-col gap-4 w-1/4">
         <h2 class="text-2xl font-bold text-center">2. Wifi credentials</h2>
         <div class="flex flex-col gap-2">
-          <input
-            id="ssid"
-            type="text"
-            placeholder="Network SSID Name"
-            class="input input-bordered input-md w-full"
-          />
-          <input
-            id="password"
-            type="password"
-            placeholder="Password"
-            class="input input-bordered input-md w-full"
-          />
+          <input id="ssid" type="text" placeholder="Network SSID Name" class="input input-bordered input-md w-full"/>
+          <input id="password" type="password" placeholder="Password" class="input input-bordered input-md w-full" />
+          <!-- <div>
+              <input v-if="showPassword" type="text" class="input input-bordered input-md w-4/6" v-model="password" />
+              <input v-else type="password" class="input input-bordered input-md w-5/6" v-model="password"/>
+              <input type="button" class="inline  btn w-1/6" @click="toggleShow"/>
+               <button class="btn" @click="toggleShow"><i class="fas" :class="{ 'fa-eye-slash': showPassword, 'fa-eye': !showPassword }"></i> </button>
+          </div>-->
           <button class="btn btn-primary w-full" @click="setWifi()">
             Send Wifi credentials
           </button>
@@ -114,25 +90,9 @@
         <h2 class="text-2xl font-bold text-center">3. Mqtt broker</h2>
         <div class="flex flex-col gap-2">
           <div>
-            <input
-              disabled
-              type="text"
-              placeholder="mqtt://"
-              value="mqtt://"
-              class="input input-bordered input-md w-1/4"
-            />
-            <input
-              id="ip"
-              type="text"
-              placeholder="Ip address"
-              class="input input-bordered input-md w-2/4"
-            />
-            <input
-              id="port"
-              type="text"
-              placeholder="1883"
-              class="input input-bordered input-md w-1/4"
-            />
+            <input disabled type="text" placeholder="mqtt://" value="mqtt://" class="input input-bordered input-md w-1/4" />
+            <input id="ip" type="text" placeholder="Ip address" class="input input-bordered input-md w-2/4" />
+            <input id="port" type="text" placeholder="1883" class="input input-bordered input-md w-1/4" />
           </div>
           <button class="btn btn-primary w-full" @click="setMqtt()">
             send Mqtt ip address
@@ -249,7 +209,6 @@ const setMqtt = async () => {
     new TextEncoder().encode(ip.value, ":", port.value)
   );
   logData();
-  // DisconnectDevice()
 };
 
 // Log the data to the console
