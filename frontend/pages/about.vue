@@ -3,7 +3,7 @@
     <PageTitle title="About" />
     <!-- Who are we? -->
     <div class="divider p-8 text-2xl font-bold text-center">Who are we ?</div>
-    <div class="mx-8 flex bg-base-300">
+    <div class="mx-8 flex quat-color">
       <img src="https://picsum.photos/id/176/500/400" alt="placeholder" class="p-8 w-1/3">
       <div class="p-8 w-2/3 flex flex-col justify-center">
         <p class="h-fit text-left">
