@@ -14,7 +14,7 @@
     --secondary-color: #fff;
     --tertiary-color: #333;
     --tertiary-color-op: #333333b2;
-    --default-text: #353740;
+    --default-text: #000000;
 }
 .primary-color {
     border-color: var(--primary-color);
