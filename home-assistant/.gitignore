@@ -16,3 +16,5 @@ homeassistant/config/secrets.yaml
 
 # homeassistant custom components
 homeassistant/config/custom_components/hacs/*
+# homeassistant custom components cache files
+homeassistant/config/custom_components/*/__pycache__
