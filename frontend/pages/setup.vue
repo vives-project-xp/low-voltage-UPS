@@ -21,7 +21,7 @@
         </div>
       </div>
       <!-- Success alert -->
-      <div v-if="isConnected" class="alert alert-success shadow-lg w-96">
+      <div v-if="isConnected" class="alert alert-success shadow-lg w-2/4">
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
           <span>Succesfully connected to {{ device.name }}</span>
@@ -31,7 +31,7 @@
     <!-- Setup section -->
     <div class="flex flex-col p-4 gap-8 items-center">
       <!-- Bluetooth -->
-      <div class="flex flex-col gap-4 w-72">
+      <div class="flex flex-col gap-4 w-1/4">
         <h2 class="text-2xl font-bold text-center">1. Bluetooth</h2>
         <div class="flex flex-col gap-2">
           <button v-if="!isConnected" id="BtnConnect" class="btn btn-primary w-full" @click="requestDevice()">
@@ -43,10 +43,10 @@
         </div>
       </div>
       <!-- Wifi -->
-      <div class="flex flex-col gap-4 w-72">
+      <div class="flex flex-col gap-4 w-1/4">
         <h2 class="text-2xl font-bold text-center">2. Wifi credentials</h2>
         <div class="flex flex-col gap-2">
-          <input id="ssid" type="text" placeholder="Network Name" class="input input-bordered input-md w-full" />
+          <input id="ssid" type="text" placeholder="Network SSID Name" class="input input-bordered input-md w-full" />
           <input id="password" type="password" placeholder="Password" class="input input-bordered input-md w-full" />
           <button 
             class="btn btn-primary w-full"
@@ -57,14 +57,16 @@
         </div>
       </div>
       <!-- Mqtt broker -->
-      <div class="flex flex-col gap-4 w-72">
+      <div class="flex flex-col gap-4 w-1/4">
         <h2 class="text-2xl font-bold text-center">3. Mqtt broker</h2>
         <div class="flex flex-col gap-2">
-          <input id="ip" type="text" placeholder="Ip address" class="input input-bordered input-md w-full" />
-          <button 
-            class="btn btn-primary w-full"
-            @click="setMqtt()"
-          >
+        <div>
+          <input disabled type="text" placeholder="mqtt://" value="mqtt://" class="input input-bordered input-md w-1/4" />
+          <input id="ip" type="text" placeholder="Ip address" class="input input-bordered input-md w-2/4" />
+          <input id="port" type="text" placeholder="1883" class="input input-bordered input-md w-1/4" />
+        </div>
+          <button class="btn btn-primary w-full"
+            @click="setMqtt()">
             send Mqtt ip address 
           </button>
         </div>
@@ -113,10 +115,10 @@ const requestDevice = async () => {
   // Get the service
   service.value = await server.value.getPrimaryService('000000ff-0000-1000-8000-00805f9b34fb')
   // Get the characteristics
-  ssid_characteristic.value = await service.value.getCharacteristic('0000ff01-0000-1000-8000-00805f9b34fb')
+  ssid_characteristic.value     = await service.value.getCharacteristic('0000ff01-0000-1000-8000-00805f9b34fb')
   password_characteristic.value = await service.value.getCharacteristic('0000ff02-0000-1000-8000-00805f9b34fb')
-  mqtt_characteristic.value = await service.value.getCharacteristic('0000ff03-0000-1000-8000-00805f9b34fb')
-  status_characteristic.value = await service.value.getCharacteristic('0000ff04-0000-1000-8000-00805f9b34fb')
+  mqtt_characteristic.value     = await service.value.getCharacteristic('0000ff03-0000-1000-8000-00805f9b34fb')
+  status_characteristic.value   = await service.value.getCharacteristic('0000ff04-0000-1000-8000-00805f9b34fb')
   
   await ssid_characteristic.value.readValue()
   await password_characteristic.value.readValue()
@@ -132,6 +134,7 @@ const DisconnectDevice = async () => {
 
 // Write the ssid and password to the device
 const setWifi = async () => {
+  console.log("setWifi")
   logData()
   // Check if we are connected to the device
   if (!isConnected.value) return
@@ -148,15 +151,19 @@ const setWifi = async () => {
 
 // Write the mqtt broker ip to the device
 const setMqtt = async () => {
+  console.log("setMqtt")
   logData()
   // Check if we are connected to the device
   if (!isConnected.value) return
   // Get the ip from the input field
   const ip = document.getElementById('ip')
+  const port = document.getElementById('port')
   // Check if the ip is valid
   if (!ip.value) return
+  if (!port.value) port.value="1883"
   // Write the ip to the characteristic
-  await mqtt_characteristic.value.writeValue(new TextEncoder().encode(ip.value))
+  console.log(ip.value,":",port.value)
+  await mqtt_characteristic.value.writeValue(new TextEncoder().encode(ip.value,":",port.value))
   logData()
 }
 
