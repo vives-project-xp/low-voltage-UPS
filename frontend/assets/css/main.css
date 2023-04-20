@@ -45,9 +45,9 @@
     background-color: var(--tertiary-color-op);
     color: var(--secondary-color);
 }
-.primary-color-card {
-    border-color: var(--primary-color);
-    background-color: var(--primary-color);
+.quat-color-card {
+    border-color: var(--quat-color);
+    background-color: var(--quat-color);
     color: var(--secondary-color);
 }
 
