@@ -2,28 +2,50 @@
   <section>
     <PageTitle title="About" />
     <!-- Who are we? -->
-    <div class="divider p-8 text-2xl font-bold text-center">Who are we ?</div>
-    <div class="mx-8 flex quat-color">
-      <img src="https://picsum.photos/id/176/500/400" alt="placeholder" class="p-8 w-1/3">
-      <div class="p-8 w-2/3 flex flex-col justify-center">
-        <p class="h-fit text-left">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Assumenda et neque inventore tempore similique, ab iusto laborum, quasi dolorem, harum illo nam exercitationem quod magni doloremque?
-          Quis in sint numquam?
-        </p>
+    <div class="rounded-2xl tertiary-color-card mx-16">
+      <div class="divider p-8 text-2xl font-bold text-center">Who are we ?</div>
+      <div class="flex md:flex-row flex-col p-8 ">
+            <div class=" md:w-1/2 md:mr-4 w-auto ms:mr-0">
+                <img src="https://picsum.photos/id/176/500/400" alt="placeholder">
+            </div>
+            <div class="md:w-1/2 w-auto text-justify">
+              <div >
+                <div>
+                  <span>
+                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. 
+                    Temporibus nam cumque ex repellendus ratione molestiae, beatae nostrum est, 
+                    iure iste, molestias aliquam placeat quibusdam dolorem voluptate voluptates illo tempore tempora.
+                  </span>
+                </div>
+                <div>
+                  <span>
+                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. 
+                    Temporibus nam cumque ex repellendus ratione molestiae, beatae nostrum est, 
+                    iure iste, molestias aliquam placeat quibusdam dolorem voluptate voluptates illo tempore tempora.
+                  </span>
+                </div>
+                <div>
+                  <span>
+                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. 
+                    Temporibus nam cumque ex repellendus ratione molestiae, beatae nostrum est, 
+                    iure iste, molestias aliquam placeat quibusdam dolorem voluptate voluptates illo tempore tempora.
+                  </span>
+                </div>
+              </div>
+            </div>
+        </div>
+      <!-- Meet the team -->
+      <div class="divider p-8 text-2xl font-bold text-center">Meet the team</div>
+      <div class="mx-8 mb-8 flex flex-wrap justify-center gap-8">
+        <AboutCard 
+          v-for="person in team" 
+          :key="person.id"
+          :name="person.name"
+          :avatar="person.avatar"
+          :job="person.job"
+          class="flex-1"
+        />
       </div>
-    </div>
-    <!-- Meet the team -->
-    <div class="divider p-8 text-2xl font-bold text-center">Meet the team</div>
-    <div class="mx-8 mb-8 flex flex-wrap justify-center gap-8">
-      <AboutCard 
-        v-for="person in team" 
-        :key="person.id"
-        :name="person.name"
-        :avatar="person.avatar"
-        :job="person.job"
-        class="flex-1"
-      />
     </div>
   </section>
 </template>
