@@ -1,81 +1,84 @@
 <template>
   <section>
     <PageTitle title="Setup" />
-    <!-- Alerts -->
-    <div class="flex flex-col items-center gap-2">
-      <!-- Error alert -->
-      <div v-if="error" class="alert alert-error shadow-lg w-fit max-w-full">
-        <div>
-          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24" >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>{{ error.name }}: {{ error.message }}</span>
+    <div>
+      <!-- Alerts -->
+      <div class="flex flex-col items-center gap-2 m-2">
+          <!-- Error alert -->
+          <div v-if="error" class="alert alert-error shadow-lg w-fit max-w-full">
+            <div>
+              <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24" >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>{{ error.name }}: {{ error.message }}</span>
+            </div>
+          </div>
+          <!-- Warning alert -->
+          <div v-if="!isSupported" class="alert alert-warning shadow-lg w-fit">
+            <div>
+              <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24" >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <span>
+                <p>Warning: Your browser does not support Bluetooth!</p>
+              </span>
+            </div>
+          </div>
+          <!-- Success alert -->
+          <div v-if="isConnected" class="alert alert-success shadow-lg w-2/4">
+            <div>
+              <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24" >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Successfully connected to {{ device.name }}</span>
+            </div>
+          </div>
         </div>
-      </div>
-      <!-- Warning alert -->
-      <div v-if="!isSupported" class="alert alert-warning shadow-lg w-fit">
-        <div>
-          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24" >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-          <span>
-            <p>Warning: Your browser does not support Bluetooth!</p>
-          </span>
-        </div>
-      </div>
-      <!-- Success alert -->
-      <div v-if="isConnected" class="alert alert-success shadow-lg w-2/4">
-        <div>
-          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24" >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>Successfully connected to {{ device.name }}</span>
-        </div>
-      </div>
-    </div>
-    <!-- Setup section -->
-    <div class="flex flex-col p-4 gap-8 items-center ">
-      <!-- Bluetooth -->
-      <div class="flex flex-col gap-4 w-1/4">
-        <h2 class="text-2xl font-bold text-center">1. Bluetooth</h2>
-        <div class="flex flex-col gap-2">
+      <div class="rounded-2xl tertiary-color-card w-fit mx-auto">
+        <!-- Setup form -->
+        <div class="flex flex-col p-4  items-center ">
+          <!-- Bluetooth -->
+          <h2 class="divider p-2 text-2xl font-bold text-center">Bluetooth</h2>
           <button v-if="!isConnected" id="BtnConnect" class="btn btn-primary w-full" @click="requestDevice()" >
             Connect
           </button>
           <button v-if="isConnected" id="BtnConnect" class="btn btn-primary w-full" @click="DisconnectDevice()" >
             DisConnect
           </button>
-        </div>
-      </div>
-      <!-- Wifi -->
-      <div class="flex flex-col gap-4 w-1/4">
-        <h2 class="text-2xl font-bold text-center">2. Wifi credentials</h2>
-        <div class="flex flex-col gap-2">
-          <input id="ssid" type="text" placeholder="Network SSID Name" class="input input-bordered input-md w-full"/>
-          <input id="password" type="password" placeholder="Password" class="input input-bordered input-md w-full" />
-          <!-- <div>
-              <input v-if="showPassword" type="text" class="input input-bordered input-md w-4/6" v-model="password" />
-              <input v-else type="password" class="input input-bordered input-md w-5/6" v-model="password"/>
-              <input type="button" class="inline  btn w-1/6" @click="toggleShow"/>
-               <button class="btn" @click="toggleShow"><i class="fas" :class="{ 'fa-eye-slash': showPassword, 'fa-eye': !showPassword }"></i> </button>
-          </div>-->
-          <button class="btn btn-primary w-full" @click="setWifi()">
-            Send Wifi credentials
-          </button>
-        </div>
-      </div>
-      <!-- Mqtt broker -->
-      <div class="flex flex-col gap-4 w-1/4">
-        <h2 class="text-2xl font-bold text-center">3. Mqtt broker</h2>
-        <div class="flex flex-col gap-2">
-          <div>
-            <input disabled type="text" placeholder="mqtt://" value="mqtt://" class="input input-bordered input-md w-1/4" />
-            <input id="ip" type="text" placeholder="Ip address" class="input input-bordered input-md w-2/4" />
-            <input id="port" type="text" placeholder="1883" class="input input-bordered input-md w-1/4" />
+
+          <!-- Wifi -->
+          <div class="flex flex-col gap-4 ">
+            <h2 class="divider p-2 text-2xl font-bold text-center">Wifi credentials</h2>
+            <div class="flex flex-col gap-2">
+              <div>
+                <input id="ssid" type="text" placeholder="Network SSID Name" class="input input-bordered input-md w-full my-1"/>
+                <input id="password" type="password" placeholder="Password" class="input input-bordered input-md w-full mb-1"/>
+                <!-- <div>
+                    <input v-if="showPassword" type="text" class="input input-bordered input-md w-4/6" v-model="password" />
+                    <input v-else type="password" class="input input-bordered input-md w-5/6" v-model="password"/>
+                    <input type="button" class="inline  btn w-1/6" @click="toggleShow"/>
+                    <button class="btn" @click="toggleShow"><i class="fas" :class="{ 'fa-eye-slash': showPassword, 'fa-eye': !showPassword }"></i> </button>
+                </div>-->
+                <button class="btn btn-primary w-full" @click="setWifi()">
+                  Send Wifi credentials
+                </button>
+              </div>
+            </div>
           </div>
-          <button class="btn btn-primary w-full" @click="setMqtt()">
-            send Mqtt ip address
-          </button>
+          <!-- Mqtt broker -->
+          <div class="flex flex-col gap-4">
+            <h2 class="divider p-2 text-2xl font-bold text-center">Mqtt broker</h2>
+            <div class="flex flex-col gap-2">
+              <div>
+                <input disabled type="text" placeholder="mqtt://" value="mqtt://" class="input input-bordered input-md w-1/4" />
+                <input id="ip" type="text" placeholder="Ip address" class="input input-bordered input-md w-2/4" />
+                <input id="port" type="text" placeholder="1883" class="input input-bordered input-md w-1/4" />
+              </div>
+              <button class="btn btn-primary w-full" @click="setMqtt()">
+                send Mqtt ip address
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
