@@ -1,15 +1,18 @@
 <template>
-  <div class="hero h-[500px]" style="background-image: url(/img/head.webp);">
-    <div class=" w-96 rounded-2xl tertiary-color-card">
-        <div class="card-body items-center text-center mb-5">
-            <h1 class="text-5xl font-bold" >Low Voltage UPS</h1>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
-                Earum placeat dolore dicta expedita, deserunt vitae laborum perferendis quod obcaecati natus esse ullam.
-                Voluptatum ad officiis quas tempore aliquam, id ullam.</p>
-            <div class="card-actions align-middle">
-                <button class="btn btn-success">
-                    <NuxtLink to="/setup">Get Started</NuxtLink>
-                </button>
+  <div class="my-16">
+    <div class="w-fit rounded-2xl tertiary-color-card">
+        <div class="flex flex-auto p-8 ">
+            <div class="w-1/3 mr-8 ">
+                <img class="" src="https://picsum.photos/id/176/500/400" alt="placeholder">
+            </div>
+            <div class="w-2/3 text-justify ">
+                <h1 class="text-5xl font-bold py-5" > LevelUp! Your home</h1>
+                <!-- add intro for project -->
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    Assumenda et neque inventore tempore similique, ab iusto laborum, quasi dolorem, harum illo nam exercitationem quod magni doloremque?
+                    Quis in sint numquam?
+                </p>
             </div>
         </div>
     </div>
