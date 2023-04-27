@@ -187,8 +187,9 @@ const setMqtt = async () => {
   if (!port.value) port.value = "1883";
   // Write the ip to the characteristic
   console.log(ip.value, ":", port.value);
+  fullAdress = ip.value + ":" + port.value;
   await mqtt_characteristic.value.writeValue(
-    new TextEncoder().encode(ip.value, ":", port.value)
+    new TextEncoder().encode(fullAdress)
   );
   logData();
 };
