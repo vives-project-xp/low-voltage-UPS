@@ -71,7 +71,7 @@
             <div class="flex flex-col gap-2">
               <div>
                 <input disabled type="text" placeholder="mqtt://" value="mqtt://" class="input input-bordered input-md w-1/4" />
-                <input id="ip" type="text" placeholder="Ip address" class="input input-bordered input-md w-2/4" />
+                <input id="ip" type="text" placeholder="Ip address or hostname" class="input input-bordered input-md w-2/4" />
                 <input id="port" type="text" placeholder="1883" class="input input-bordered input-md w-1/4" />
               </div>
               <button class="btn btn-primary w-full" @click="setMqtt()">
@@ -86,7 +86,6 @@
 </template>
 
 <script setup>
-import { stringify } from "postcss";
 import { onMounted } from "vue";
 
 const isSupported = ref(false);
@@ -99,6 +98,9 @@ const password_characteristic = ref();
 const mqtt_characteristic = ref();
 const status_characteristic = ref();
 const error = ref();
+
+const ipRegex = /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+const dnsRegex = /^((?!:\/\/)([a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,63})$/;
 
 // Check if bluetooth is supported (browser)
 const checkSupported = async () => {
@@ -174,6 +176,26 @@ const setWifi = async () => {
   logData();
 };
 
+const getIP = async (hostname) => {
+  return new Promise((resolve, reject) => {
+    const url = `https://dns.google/resolve?name=${hostname}&type=A`;
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        if (ipRegex.test(data.Answer[0].data))
+        {
+          console.log("valid ip "+ data.Answer[0].data);
+          resolve(data.Answer[0].data);
+        }
+        else
+        {
+          console.log("ip "+ data.Answer[0].data);
+          resolve(getIP(data.Answer[0].data));
+        }
+      });
+  });
+}
+
 // Write the mqtt broker ip to the device
 const setMqtt = async () => {
   console.log("setMqtt");
@@ -185,9 +207,27 @@ const setMqtt = async () => {
   const port = document.getElementById("port");
   // Check if the ip is valid
   if (!ip.value) return;
+  // Check if port is present else use default port
   if (!port.value) {port.value = "1883";}
+  // if ip is ip address keep value
+  const ipAddress = ref();
+  if (ipRegex.test(ip.value)) 
+  {
+    ipAddress.value = ip.value;
+    console.log("ip "+ ip.value);
+  }
+  // if ip is dns resolve to ip address
+  if (!ipRegex.test(ip.value) && dnsRegex.test(ip.value)) 
+  {
+    ipAddress.value = await getIP(ip.value)
+    console.log("ipd "+ ipAddress.value);
+  }
+  // if ip is not valid return
+  if (!ipAddress.value){ error.value={"name":"Mqtt Broker" , "message":"invalid"};return;}
+  error.value=null;
   // Write the ip to the characteristic
-  let fullAdress = (ip.value + ":" + port.value);
+  const fullAdress = (ipAddress.value + ":" + port.value);
+  console.log("fullAdress "+ fullAdress);
   await mqtt_characteristic.value.writeValue(
     new TextEncoder().encode(fullAdress)
   );
