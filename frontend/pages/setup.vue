@@ -34,7 +34,7 @@
             </div>
           </div>
         </div>
-      <div class="rounded-2xl tertiary-color-card w-fit mx-auto">
+      <div class="rounded-2xl tertiary-color-card w-fit mx-auto m-8">
         <!-- Setup form -->
         <div class="flex flex-col p-4  items-center ">
           <!-- Bluetooth -->
