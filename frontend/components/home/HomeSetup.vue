@@ -5,7 +5,7 @@
             <h1 class=" divider text-2xl font-bold ">Setup </h1>
             <p>Press the button below to get started with the setup of your LevelUp Device.</p>
             <div class=" align-center">
-                <button class="btn btn-success">
+                <button class="mt-4 btn btn-success">
                     <NuxtLink to="/setup">Get Started</NuxtLink>
                 </button>
             </div>
