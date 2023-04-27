@@ -2,9 +2,10 @@
 
 ## To do
 
-1. spanning van de batterij meten>
+1. vermogen verbruik van de aangesloten toestel.
 2. gaten in de pcb maken.
-3. soon^tm
+3. kiezen tussen de batterij en net.
+4. soon^tm
 
 ## Schematic
 
