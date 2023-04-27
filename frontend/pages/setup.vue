@@ -119,18 +119,20 @@ import { onMounted } from "vue";
 
 const isSupported = ref(false);
 const isConnected = ref(false);
+const error = ref();
+
 const device = ref();
 const server = ref();
 const service = ref();
+
 const ssid_characteristic = ref();
 const password_characteristic = ref();
 const mqtt_characteristic = ref();
 const status_characteristic = ref();
-const error = ref();
+const name_characteristic = ref();
 
 const ipRegex = /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
 const dnsRegex = /^((?!:\/\/)([a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,63})$/;
-
 const showPass = ref(false);
 
 // Check if bluetooth is supported (browser)
@@ -173,11 +175,15 @@ const requestDevice = async () => {
   status_characteristic.value = await service.value.getCharacteristic(
     "0000ff04-0000-1000-8000-00805f9b34fb"
   );
+  name_characteristic.value = await service.value.getCharacteristic(
+    "0000ff05-0000-1000-8000-00805f9b34fb"
+  );
 
   await ssid_characteristic.value.readValue();
   await password_characteristic.value.readValue();
   await mqtt_characteristic.value.readValue();
-  //await status_characteristic.value.readValue()
+  // await status_characteristic.value.readValue();
+  // await name_characteristic.value.readValue();
   // Log the data
   logData();
 };
@@ -186,7 +192,7 @@ const DisconnectDevice = async () => {
   isConnected.value = false;
 };
 
-const setName =() =>{ 
+const setName =async () =>{ 
   console.log("setName");
   logData();
   // Check if we are connected to the device
@@ -195,9 +201,9 @@ const setName =() =>{
   const name = document.getElementById("name");
   // Check if the name is valid
   if (!name.value) return;
-  // await name_characteristic.value.writeValue(
-  //   new TextEncoder().encode(name.value)
-  // );
+  await name_characteristic.value.writeValue(
+    new TextEncoder().encode(name.value)
+  );
   // Log the data
   logData();
 };
