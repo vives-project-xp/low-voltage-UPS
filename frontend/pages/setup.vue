@@ -86,6 +86,7 @@
 </template>
 
 <script setup>
+import { stringify } from "postcss";
 import { onMounted } from "vue";
 
 const isSupported = ref(false);
@@ -184,10 +185,9 @@ const setMqtt = async () => {
   const port = document.getElementById("port");
   // Check if the ip is valid
   if (!ip.value) return;
-  if (!port.value) port.value = "1883";
+  if (!port.value) {port.value = "1883";}
   // Write the ip to the characteristic
-  console.log(ip.value, ":", port.value);
-  fullAdress = ip.value + ":" + port.value;
+  let fullAdress = (ip.value + ":" + port.value);
   await mqtt_characteristic.value.writeValue(
     new TextEncoder().encode(fullAdress)
   );
