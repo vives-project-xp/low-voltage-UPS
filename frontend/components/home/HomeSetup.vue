@@ -1,5 +1,5 @@
 <template>
-  <div class="hero h-[250px]">
+  <div class="hero h-[200px]">
     <div class=" w-96 rounded-2xl tertiary-color-card">
         <div class="card-body items-center text-justify mb-5">
             <h1 class="text-2xl font-bold ">Setup </h1>
