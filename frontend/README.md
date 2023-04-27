@@ -8,17 +8,10 @@ Current version of the deployed application is available at [https://ups.robcocq
 
 ## Setup
 
-Make sure to install the dependencies:
+Make sure to install the dependencies using npm:
 
 ```bash
-# yarn
-yarn install
-
-# npm
 npm install
-
-# pnpm
-pnpm install
 ```
 
 ## Development Server
