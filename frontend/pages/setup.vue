@@ -47,8 +47,20 @@
               DisConnect
             </button>
 
+            <!-- Name -->
+            <div class="flex flex-col gap-4 w-full">
+              <h2 class="divider p-2 text-2xl font-bold text-center">Device Name</h2>
+              <div class="flex flex-col gap-2">
+                <div>
+                  <input id="name" type="text" placeholder="New Device name" class="input input-bordered input-md w-full my-1"/>
+                  <button class="btn btn-primary w-full" @click="setName()">
+                    Send new Device Name
+                  </button>
+                </div>
+              </div>
+            </div>
             <!-- Wifi -->
-            <div class="flex flex-col gap-4 ">
+            <div class="flex flex-col gap-4 w-full">
               <h2 class="divider p-2 text-2xl font-bold text-center">Wifi credentials</h2>
               <div class="flex flex-col gap-2">
                 <div>
@@ -172,6 +184,22 @@ const requestDevice = async () => {
 const DisconnectDevice = async () => {
   console.log("Button clicked");
   isConnected.value = false;
+};
+
+const setName =() =>{ 
+  console.log("setName");
+  logData();
+  // Check if we are connected to the device
+  if (!isConnected.value) return;
+  // Get the name from the input field
+  const name = document.getElementById("name");
+  // Check if the name is valid
+  if (!name.value) return;
+  // await name_characteristic.value.writeValue(
+  //   new TextEncoder().encode(name.value)
+  // );
+  // Log the data
+  logData();
 };
 
 const toggleShowPass = () => {
