@@ -172,18 +172,18 @@ const requestDevice = async () => {
   mqtt_characteristic.value = await service.value.getCharacteristic(
     "0000ff03-0000-1000-8000-00805f9b34fb"
   );
-  status_characteristic.value = await service.value.getCharacteristic(
+  name_characteristic.value = await service.value.getCharacteristic(
     "0000ff04-0000-1000-8000-00805f9b34fb"
   );
-  name_characteristic.value = await service.value.getCharacteristic(
+  status_characteristic.value = await service.value.getCharacteristic(
     "0000ff05-0000-1000-8000-00805f9b34fb"
   );
 
   await ssid_characteristic.value.readValue();
   await password_characteristic.value.readValue();
   await mqtt_characteristic.value.readValue();
+  await name_characteristic.value.readValue();
   // await status_characteristic.value.readValue();
-  // await name_characteristic.value.readValue();
   // Log the data
   logData();
 };
