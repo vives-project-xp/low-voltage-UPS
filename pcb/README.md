@@ -5,7 +5,8 @@
 1. vermogen verbruik van de aangesloten toestel.
 2. gaten in de pcb maken.
 3. kiezen tussen de batterij en net.
-4. soon^tm
+4. io pinnen maken 
+5. soon^tm
 
 ## Schematic
 
