@@ -1,6 +1,6 @@
 <template>
   <header class="flex justify-between border-2 primary-color">
-    <p class="p-4">Low Voltage UPS</p>
+    <p class="p-4"><NuxtLink class="py-4" to="/">LevelUP!</NuxtLink></p>
     <nav>
       <ul class="flex gap-4">
           <li class="py-4"><NuxtLink class="py-4" to="/">Home</NuxtLink></li>
