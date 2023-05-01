@@ -6,46 +6,38 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
-from dataclasses import dataclass
 import logging
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
+    SensorEntity,
     SensorEntityDescription,
     SensorStateClass,
-    SensorEntity,
 )
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
+    EntityCategory,
     UnitOfElectricCurrent,
     UnitOfElectricPotential,
     UnitOfEnergy,
     UnitOfPower,
+    UnitOfTime,
     UnitOfVolume,
 )
-from homeassistant.helpers.entity import DeviceInfo
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
-from homeassistant.util import slugify
 
 from .const import DOMAIN
 
-
 _LOGGER = logging.getLogger(__name__)
 
-@dataclass
-class CDEMSensorEntityDescription(SensorEntityDescription):
-    """Sensor entity description for CDEM."""
-
-    state: Callable | None = None
-
 # Define the sensors that are available
-SENSORS: tuple[CDEMSensorEntityDescription, ...] = (
-# Meter data
+SENSORS: tuple[SensorEntityDescription, ...] = (
+    # Meter data
     # Cumulated electricity consumption (high tariff)
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="consumption_high_tarif",
         key="consumption_high_tarif",
         translation_key="consumption_high_tarif",
         device_class=SensorDeviceClass.ENERGY,
@@ -53,7 +45,8 @@ SENSORS: tuple[CDEMSensorEntityDescription, ...] = (
         state_class=SensorStateClass.TOTAL_INCREASING,
     ),
     # Cumulated electricity consumption (low tariff)
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="consumption_low_tarif",
         key="consumption_low_tarif",
         translation_key="consumption_low_tarif",
         device_class=SensorDeviceClass.ENERGY,
@@ -61,7 +54,8 @@ SENSORS: tuple[CDEMSensorEntityDescription, ...] = (
         state_class=SensorStateClass.TOTAL_INCREASING,
     ),
     # Cumulated electricity production (high tariff)
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="production_high_tarif",
         key="production_high_tarif",
         translation_key="production_high_tarif",
         device_class=SensorDeviceClass.ENERGY,
@@ -69,7 +63,8 @@ SENSORS: tuple[CDEMSensorEntityDescription, ...] = (
         state_class=SensorStateClass.TOTAL_INCREASING,
     ),
     # Cumulated electricity production (low tariff)
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="production_low_tarif",
         key="production_low_tarif",
         translation_key="production_low_tarif",
         device_class=SensorDeviceClass.ENERGY,
@@ -77,7 +72,8 @@ SENSORS: tuple[CDEMSensorEntityDescription, ...] = (
         state_class=SensorStateClass.TOTAL_INCREASING,
     ),
     # Instantaneous consumption over all phases
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="total_power_consumption",
         key="total_power_consumption",
         translation_key="total_power_consumption",
         device_class=SensorDeviceClass.POWER,
@@ -85,7 +81,8 @@ SENSORS: tuple[CDEMSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     # Instantaneous production over all phases
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="total_power_production",
         key="total_power_production",
         translation_key="total_power_production",
         device_class=SensorDeviceClass.POWER,
@@ -93,7 +90,8 @@ SENSORS: tuple[CDEMSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     # Instantaneous voltage L1
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="actual_voltage_l1",
         key="actual_voltage_l1",
         translation_key="actual_voltage_l1",
         device_class=SensorDeviceClass.VOLTAGE,
@@ -101,7 +99,8 @@ SENSORS: tuple[CDEMSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     # Instantaneous voltage L2
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="actual_voltage_l2",
         key="actual_voltage_l2",
         translation_key="actual_voltage_l2",
         device_class=SensorDeviceClass.VOLTAGE,
@@ -109,7 +108,8 @@ SENSORS: tuple[CDEMSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     # Instantaneous voltage L3
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="actual_voltage_l3",
         key="actual_voltage_l3",
         translation_key="actual_voltage_l3",
         device_class=SensorDeviceClass.VOLTAGE,
@@ -117,7 +117,8 @@ SENSORS: tuple[CDEMSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     # Instantaneous current L1
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="actual_current_l1",
         key="actual_current_l1",
         translation_key="actual_current_l1",
         device_class=SensorDeviceClass.CURRENT,
@@ -125,7 +126,8 @@ SENSORS: tuple[CDEMSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     # Instantaneous current L2
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="actual_current_l2",
         key="actual_current_l2",
         translation_key="actual_current_l2",
         device_class=SensorDeviceClass.CURRENT,
@@ -133,7 +135,8 @@ SENSORS: tuple[CDEMSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     # Instantaneous current L3
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="actual_current_l3",
         key="actual_current_l3",
         translation_key="actual_current_l3",
         device_class=SensorDeviceClass.CURRENT,
@@ -141,7 +144,8 @@ SENSORS: tuple[CDEMSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     # Instantaneous active power production L1
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="l1_power_production",
         key="l1_power_production",
         translation_key="l1_power_production",
         device_class=SensorDeviceClass.POWER,
@@ -149,7 +153,8 @@ SENSORS: tuple[CDEMSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     # Instantaneous active power production L2
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="l2_power_production",
         key="l2_power_production",
         translation_key="l2_power_production",
         device_class=SensorDeviceClass.POWER,
@@ -157,16 +162,17 @@ SENSORS: tuple[CDEMSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     # Instantaneous active power production L3
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="l3_power_production",
         key="l3_power_production",
         translation_key="l3_power_production",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.KILO_WATT,
         state_class=SensorStateClass.MEASUREMENT,
     ),
-
     # Instantaneous active power consumption L1
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="l1_power_consumption",
         key="l1_power_consumption",
         translation_key="l1_power_consumption",
         device_class=SensorDeviceClass.POWER,
@@ -174,7 +180,8 @@ SENSORS: tuple[CDEMSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     # Instantaneous active power consumption L2
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="l2_power_consumption",
         key="l2_power_consumption",
         translation_key="l2_power_consumption",
         device_class=SensorDeviceClass.POWER,
@@ -182,65 +189,70 @@ SENSORS: tuple[CDEMSensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     # Instantaneous active power consumption L3
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="l3_power_consumption",
         key="l3_power_consumption",
         translation_key="l3_power_consumption",
         device_class=SensorDeviceClass.POWER,
         native_unit_of_measurement=UnitOfPower.KILO_WATT,
         state_class=SensorStateClass.MEASUREMENT,
     ),
-    # Tariff indicator (1=high, 2=low)
-    CDEMSensorEntityDescription(
-        key="actual_tarif",
-        translation_key="actual_tarif",
-        device_class=SensorDeviceClass.ENUM,
-        options=["Low", "High", "Unknown"],
-        icon="mdi:theme-light-dark",
-    ),
     # Total gas consumption
-   CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="gas_meter_m3",
         key="gas_meter_m3",
         translation_key="gas_meter_m3",
         icon="mdi:fire",
         native_unit_of_measurement=UnitOfVolume.CUBIC_METERS,
         state_class=SensorStateClass.TOTAL_INCREASING,
     ),
-# CDEM Stats
+    # CDEM Stats
     # Decoded p1 telegrams (by CDEM)
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="decoded",
         key="decoded",
         translation_key="decoded",
-#        entity_registry_enabled_default=False,
-
+        state_class=SensorStateClass.TOTAL,
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
     # Timeouts
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="timeouts",
         key="timeouts",
         translation_key="timeouts",
-#        entity_registry_enabled_default=False,
-
+        state_class=SensorStateClass.TOTAL,
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
     # Published
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="published",
         key="published",
         translation_key="published",
-#        entity_registry_enabled_default=False,
-
+        state_class=SensorStateClass.TOTAL,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        #        entity_registry_enabled_default=False,
     ),
     # crc errors
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="crcerrors",
         key="crcerrors",
         translation_key="crcerrors",
-#        entity_registry_enabled_default=False,
-
+        state_class=SensorStateClass.TOTAL,
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
     # Uptime
-    CDEMSensorEntityDescription(
+    SensorEntityDescription(
+        name="uptime",
         key="uptime",
         translation_key="uptime",
-#        entity_registry_enabled_default=False,
+        device_class=SensorDeviceClass.DURATION,
+        native_unit_of_measurement=UnitOfTime.SECONDS,
+        state_class=SensorStateClass.TOTAL,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        #        entity_registry_enabled_default=False,
     ),
 )
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -248,50 +260,33 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up CDEM sensors from config entry."""
-    cdem = hass.data[DOMAIN][config_entry.entry_id]
 
-    new_devices = []
+    # Add all sensors to a list
     for description in SENSORS:
-        new_devices.append(CDEMSensor(cdem, description, config_entry))
-
-    if new_devices:
-        async_add_entities(new_devices)
+        async_add_entities([CDEMSensor(hass, description, config_entry)])
 
 
 class CDEMSensor(SensorEntity):
     """Representation of a CDEM that is updated via MQTT."""
 
-    should_poll = False # We get updates via MQTT subscription so no need for polling the device for updates
-    entity_description: CDEMSensorEntityDescription
+    _attr_has_entity_name = (
+        True  # We want to use the friendly name from the entity registry
+    )
+    should_poll = False  # We get updates via MQTT subscription so no need for polling the device for updates
 
     def __init__(
         self,
-        cdem,
-        description: CDEMSensorEntityDescription,
+        hass: HomeAssistant,
+        description: SensorEntityDescription,
         config_entry: ConfigEntry,
     ) -> None:
         """Initialize the sensor."""
-        self._cdem = cdem
+        self._cdem = hass.data[DOMAIN][config_entry.entry_id]
         self.entity_description = description
 
-        slug = slugify(description.key.replace("/", "_"))
-        self.entity_id = f"sensor.{self._cdem.name}_{slug}"
-        self._attr_unique_id = f"{self._cdem.cdem_id}_{slug}"
-        self._attr_name = f"{slug}"
-
-    # This property lets HA know that this sensor belongs to a specific device
-    @property
-    def device_info(self) -> DeviceInfo:
-        """Information about this entity/device."""
-        return {
-            "identifiers": {(DOMAIN, self._cdem.cdem_id)},
-            # If desired, the name for the device could be different to the entity
-            "name": self._cdem.name,
-            "sw_version": self._cdem.firmware_version,
-            "hw_version": self._cdem.hardware_version,
-            "model": self._cdem.model,
-            "manufacturer": self._cdem.manufacturer,
-        }
+        # Set attributes (inherited from SensorEntity)
+        self._attr_unique_id = f"{self._cdem.cdem_id}_{description.key}"
+        self._attr_device_info = self._cdem.device_info
 
     # This property is important to let HA know if this entity is online or not.
     # If an entity is offline (return False), the UI will refelect this.
@@ -306,15 +301,14 @@ class CDEMSensor(SensorEntity):
     @property
     def native_value(self) -> StateType:
         """Return the state of the sensor."""
-        return getattr(self._cdem, self.entity_description.key)
+        return getattr(self._cdem, str(self.entity_description.key))
 
-
-    async def async_added_to_hass(self):
+    async def async_added_to_hass(self) -> None:
         """Run when this Entity has been added to HA."""
         # Sensors should also register callbacks to HA when their state changes
         self._cdem.register_callback(self.async_write_ha_state)
 
-    async def async_will_remove_from_hass(self):
+    async def async_will_remove_from_hass(self) -> None:
         """Entity being removed from hass."""
         # The opposite of async_added_to_hass. Remove any registered call backs here.
         self._cdem.remove_callback(self.async_write_ha_state)

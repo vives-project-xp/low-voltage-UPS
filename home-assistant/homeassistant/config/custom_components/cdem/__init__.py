@@ -2,21 +2,30 @@
 from __future__ import annotations
 
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 
-from . import device
-from .const import DOMAIN, PLATFORMS
+from .const import DOMAIN
+from .device import CDEM
+
+# List of platforms to support. There should be a matching .py file for each,
+# eg <sensor.py>
+PLATFORMS: list[Platform] = [
+    Platform.SENSOR,
+    Platform.BINARY_SENSOR,
+]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up CDEM from a config entry."""
-    # Store an instance of the "connecting" class that does the work of speaking
-    # with your actual devices.
-    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = device.CDEM(hass, entry.data["name"])
+    # Stores an instance of the "connecting" class that does the work of speaking with the actual devices.
+    cdem = CDEM(hass, entry.data["name"], entry.data["topic"])
+    await cdem.subscribe()
 
+    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = cdem
     # This creates each HA object for each platform your device requires.
     # It's done by calling the `async_setup_entry` function in each platform module.
-    hass.config_entries.async_setup_platforms(entry, PLATFORMS)
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
 
