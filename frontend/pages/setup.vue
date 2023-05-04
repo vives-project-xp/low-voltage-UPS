@@ -242,6 +242,7 @@ const setWifi = async () => {
 // Write the mqtt broker ip to the device
 const getIP = async (hostname) => {
   return new Promise((resolve, reject) => {
+    try{
     const url = `https://dns.google/resolve?name=${hostname}&type=A`;
     fetch(url)
       .then(response => response.json())
@@ -257,6 +258,11 @@ const getIP = async (hostname) => {
           resolve(getIP(data.Answer[0].data));
         }
       });
+    }
+    catch (error) {
+      error.value={"name":"Mqtt Broker ip" , "message":"invalid"};
+      reject(error);
+    }
   });
 }
 
