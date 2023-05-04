@@ -9,9 +9,12 @@
                 <h1 class=" divider text-2xl md:text-4xl font-bold py-5" > LevelUp! Your home</h1>
                 <!-- add intro for project -->
                 <p class="text-justify">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Assumenda et neque inventore tempore similique, ab iusto laborum, quasi dolorem, harum illo nam exercitationem quod magni doloremque?
-                    Quis in sint numquam?
+                    Introducing <b>LevelUp!</b> a project focused on developing a smart low voltage UPS 12V using an ESP32.
+                    The main objective of this project is to ensure uninterrupted power supply to critical devices such as modems,
+                    routers, and other similar devices.
+                    By utilizing the ESP32, this project aims to make the UPS smart and efficient,
+                    providing users with a reliable and hassle-free experience. Say goodbye to power outages and unstable voltage,
+                    and level up your home with our innovative low voltage battery solution.
                 </p>
             </div>
         </div>
