@@ -2,7 +2,7 @@
   <section>
     <PageTitle title="About" />
     <!-- Who are we? -->
-    <div class="rounded-2xl tertiary-color-card mx-16">
+    <div class="rounded-2xl tertiary-color-card mx-4">
       <div class="divider p-8 text-2xl font-bold text-center">Who are we ?</div>
       <div class="flex md:flex-row flex-col px-8 ">
             <div class=" md:w-1/2 md:mr-4 w-auto ms:mr-0">
@@ -26,6 +26,7 @@
                     and completed on time and within budget.
                   </span>
                 </div>
+                <br>
               </div>
             </div>
           </div>
@@ -49,7 +50,7 @@
           :name="person.name"
           :avatar="person.avatar"
           :job="person.job"
-          class="flex-1"
+          class="md:flex-1"
         />
       </div>
     </div>

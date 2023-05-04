@@ -3,7 +3,7 @@
     <PageTitle title="Setup" />
     <div>
       <!-- Alerts -->
-      <div class="flex flex-col items-center gap-2 m-2 mx-16">
+      <div class="flex flex-col items-center gap-2 m-2 mx-4">
           <!-- Error alert -->
           <div v-if="error" class="alert alert-error shadow-lg w-fit max-w-full">
             <div>
@@ -34,7 +34,7 @@
             </div>
           </div>
         </div>
-      <div class="mx-16">
+      <div class="mx-4">
         <div class="rounded-2xl tertiary-color-card  w-fit mt-8 m-16 mx-auto">
           <!-- Setup form -->
           <div class="flex flex-col p-4  items-center ">
@@ -65,8 +65,8 @@
               <div class="flex flex-col gap-2">
                 <div>
                   <input id="ssid" type="text" placeholder="Network SSID Name" class="input input-bordered input-md w-full my-1"/>
-                  <input id="password" type="password" placeholder="Password" class="input input-bordered input-md w-11/12 mb-1"/>
-                  <button class="btn btn-info w-1/12 p-2 mb-1" @click="toggleShowPass()">
+                  <input id="password" type="password" placeholder="Password" class="input input-bordered input-md md:w-11/12 w-10/12 mb-1"/>
+                  <button class="btn btn-info md:w-1/12 w-2/12 p-2 mb-1" @click="toggleShowPass()">
                     <i v-if="!showPass">
                       <svg class="h-6 w-6 inline-flex " fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
