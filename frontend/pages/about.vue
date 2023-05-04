@@ -59,9 +59,9 @@
 <script setup>
   // team data
   const team = ref([
-    {id: 0, name: 'Axel', avatar: 'https://picsum.photos/id/153/200', job: 'Hardware & Firmware'},
-    {id: 1, name: 'Maxime', avatar: 'https://picsum.photos/id/172/200', job: 'Firmware'},
-    {id: 2, name: 'Rob', avatar: '/img/rob.jpg', job: 'Website , Home Assistant device Integration'},
-    {id: 3, name: 'Tibo', avatar: 'https://picsum.photos/id/155/200', job: 'Home Assistant Integration , Website'},
+    {id: 0, name: 'Axel', avatar: '/img/axel.jpg', job: 'Hardware & Firmware'},
+    {id: 1, name: 'Maxime', avatar: '/img/maxime.jpg', job: 'Firmware & hardware'},
+    {id: 2, name: 'Rob', avatar: '/img/rob.jpg', job: 'Website , Home Assistant , device case'},
+    {id: 3, name: 'Tibo', avatar: '/img/tibo.jpg', job: 'Home Assistant Integration , Website'},
   ])
 </script>
