@@ -1,6 +1,6 @@
 <template>
   <div class="my-8">
-    <div class=" rounded-2xl tertiary-color-card md:mx-auto mx-4">
+    <div class=" rounded-2xl tertiary-color-card md:mx-8 mx-4">
         <div class="flex md:flex-row flex-col p-8 ">
             <div class="md:w-1/3 mr-8 md:mr-4 w-auto ms:mr-0">
                 <img src="https://picsum.photos/id/176/500/400" alt="placeholder">
