@@ -188,7 +188,6 @@ const requestDevice = async () => {
   logData();
 };
 const DisconnectDevice = async () => {
-  console.log("Button clicked");
   isConnected.value = false;
 };
 
