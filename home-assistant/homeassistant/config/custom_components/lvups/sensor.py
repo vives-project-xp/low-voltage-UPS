@@ -24,9 +24,8 @@ from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-# Define the sensors that are available
+# A list of all sensors (add more if you need them)
 SENSORS: tuple[SensorEntityDescription, ...] = (
-    # LVUPS STATE
     # Device Uptime
     SensorEntityDescription(
         name="uptime",
@@ -37,7 +36,34 @@ SENSORS: tuple[SensorEntityDescription, ...] = (
         state_class=SensorStateClass.TOTAL,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
-    # Battery Percentage
+    # Indicating the time needed to charge the battery (only available when battery is charging)
+    SensorEntityDescription(
+        name="charge_time",
+        key="charge_time",
+        translation_key="charge_time",
+        device_class=SensorDeviceClass.DURATION,
+        native_unit_of_measurement=UnitOfTime.SECONDS,
+        # state_class=SensorStateClass.TOTAL,
+    ),
+    # Indicating the time needed to discharge the battery (only available when battery is in use)
+    SensorEntityDescription(
+        name="discharge_time",
+        key="discharge_time",
+        translation_key="discharge_time",
+        device_class=SensorDeviceClass.DURATION,
+        native_unit_of_measurement=UnitOfTime.SECONDS,
+        # state_class=SensorStateClass.TOTAL,
+    ),
+    # Indicating the time needed to discharge the battery on max load (always available)
+    SensorEntityDescription(
+        name="discharge_time_ml",
+        key="discharge_time_ml",
+        translation_key="discharge_time_ml",
+        device_class=SensorDeviceClass.DURATION,
+        native_unit_of_measurement=UnitOfTime.SECONDS,
+        # state_class=SensorStateClass.TOTAL,
+    ),
+    # Indicating the battery charge percentage
     SensorEntityDescription(
         name="battery_percentage",
         key="battery_percentage",
@@ -48,6 +74,7 @@ SENSORS: tuple[SensorEntityDescription, ...] = (
 )
 
 
+# This is the main function that is called by HA to set up the platform.
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
@@ -55,7 +82,7 @@ async def async_setup_entry(
 ) -> None:
     """Set up LVUPS sensors from config entry."""
 
-    # Add all sensors to a list
+    # Create all sensors and add them to HA
     for description in SENSORS:
         async_add_entities([LVUPSSensor(hass, description, config_entry)])
 
@@ -95,14 +122,18 @@ class LVUPSSensor(SensorEntity):
     @property
     def native_value(self) -> StateType:
         """Return the state of the sensor."""
-        return getattr(self._lvups, str(self.entity_description.key))
+        return getattr(self._lvups, self.entity_description.key)
 
     async def async_added_to_hass(self) -> None:
         """Run when this Entity has been added to HA."""
         # Sensors should also register callbacks to HA when their state changes
-        self._lvups.register_callback(self.async_write_ha_state)
+        self._lvups.register_callback(
+            {self.entity_description.key: self.async_write_ha_state}
+        )
 
     async def async_will_remove_from_hass(self) -> None:
         """Entity being removed from hass."""
         # The opposite of async_added_to_hass. Remove any registered call backs here.
-        self._lvups.remove_callback(self.async_write_ha_state)
+        self._lvups.remove_callback(
+            {self.entity_description.key: self.async_write_ha_state}
+        )

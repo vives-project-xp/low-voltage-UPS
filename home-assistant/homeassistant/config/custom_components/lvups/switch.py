@@ -14,17 +14,24 @@ from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
+# A list of all switches (add more if you need them)
 SWITCHES: tuple[SwitchEntityDescription, ...] = (
-    # Battery Charger
+    # Charge the battery
     SwitchEntityDescription(
-        name="battery_charger",
-        key="battery_charger",
-        translation_key="battery_charger",
-        icon="mdi:battery-charging",
+        name="charge_battery",
+        key="charge_battery",
+        translation_key="charge_battery",
+    ),
+    # Use the battery
+    SwitchEntityDescription(
+        name="use_battery",
+        key="use_battery",
+        translation_key="use_battery",
     ),
 )
 
 
+# This is the main function that is called by HA to set up the integration
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
@@ -32,11 +39,12 @@ async def async_setup_entry(
 ) -> None:
     """Set up LVUPS sensors from config entry."""
 
-    # Add all switches
-    async_add_entities([LVUPSBatteryCharger(hass, SWITCHES[0], config_entry)])
+    # Create all switches and add them to HA.
+    for description in SWITCHES:
+        async_add_entities([LVUPSSwitch(hass, description, config_entry)])
 
 
-class LVUPSBatteryCharger(SwitchEntity):
+class LVUPSSwitch(SwitchEntity):
     """Representation of a LVUPS that is updated via MQTT."""
 
     _attr_has_entity_name = (
@@ -51,6 +59,7 @@ class LVUPSBatteryCharger(SwitchEntity):
         config_entry: ConfigEntry,
     ) -> None:
         """Initialize the sensor."""
+        self._hass = hass
         self._lvups = hass.data[DOMAIN][config_entry.entry_id]
         self.entity_description = description
 
@@ -58,35 +67,22 @@ class LVUPSBatteryCharger(SwitchEntity):
         self._attr_unique_id = f"{self._lvups.id}_{description.key}"
         self._attr_device_info = self._lvups.device_info
 
-    # This property is important to let HA know if this entity is online or not.
-    # If an entity is offline (return False), the UI will refelect this.
-    @property
-    def available(self) -> bool:
-        """Return True if value is not None."""
-        if self.is_on is None:
-            return False
-        return True
-
-    # This property lets HA know the value of the sensor
+    # This property lets HA know the value of the switch
     @property
     def is_on(self) -> bool | None:
         """Return the state of the sensor."""
-        return getattr(self._lvups, "battery_ischarging")
+        return getattr(self._lvups, self.entity_description.key)
 
-    async def async_turn_on(self, **kwargs: Any) -> None:
+    def turn_on(self, **kwargs: Any) -> None:
         """Turn the entity on."""
-        await self._lvups.battery_charge(True)
+        setattr(self._lvups, self.entity_description.key, True)
+        self._hass.add_job(
+            self.async_write_ha_state
+        )  # This is needed to update the state of the switch in HA
 
-    async def async_turn_off(self, **kwargs: Any) -> None:
+    def turn_off(self, **kwargs: Any) -> None:
         """Turn the entity off."""
-        await self._lvups.battery_charge(False)
-
-    async def async_added_to_hass(self) -> None:
-        """Run when this Entity has been added to HA."""
-        # Sensors should also register callbacks to HA when their state changes
-        self._lvups.register_callback(self.async_write_ha_state)
-
-    async def async_will_remove_from_hass(self) -> None:
-        """Entity being removed from hass."""
-        # The opposite of async_added_to_hass. Remove any registered call backs here.
-        self._lvups.remove_callback(self.async_write_ha_state)
+        setattr(self._lvups, self.entity_description.key, False)
+        self._hass.add_job(
+            self.async_write_ha_state
+        )  # This is needed to update the state of the switch in HA

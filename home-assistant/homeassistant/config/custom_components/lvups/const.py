@@ -4,16 +4,20 @@
 # name for the integration.
 DOMAIN = "lvups"
 
-# Data for each topic
+# Data for the STATE topic
 TOPICS_STATE = [
-    "uptime",
-    "battery_ischarging",
-    "battery_percentage",
-    "battery_inuse",
-    "recieving_power",
+    "Battery_percentage",
+    "Charge_time",
+    "Charging_battery",
+    "Discharge_time",
+    "Discharge_time_ml",
+    "Receiving_power",
+    "Uptime",
+    "Using_battery",
 ]
 
-TOPICS_INFO = [  # Retained messages (only used on device creation)
-    "firmware_version",
-    "hardware_version",
+# Data for the INFO topic
+TOPICS_INFO = [  # Retained messages (only used/read on device creation)
+    "Firmware_version",
+    "Hardware_version",
 ]

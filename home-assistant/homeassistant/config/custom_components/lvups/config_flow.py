@@ -1,4 +1,5 @@
 """Config flow for LVUPS integration."""
+
 from __future__ import annotations
 
 import logging
@@ -31,16 +32,28 @@ async def validate_input(hass: HomeAssistant, data: dict) -> dict[str, Any]:
     Data has the keys from DATA_SCHEMA with values provided by the user.
     """
     # Validate name
+    # Check if name is unique
+    _LOGGER.debug("Checking if name is unique")
+    try:
+        for device in hass.data[DOMAIN]:
+            if hass.data[DOMAIN][device].name == data["name"].lower():
+                raise NameAlreadyExists
+    except KeyError:
+        pass  # No device exists for this domain, so we can continue
+
     # Check if name is too short
+    _LOGGER.debug("Checking if name is too short")
     if len(data["name"]) < 3:
         raise NameTooShort
 
     # Check if name is too long
+    _LOGGER.debug("Checking if name is too long")
     if len(data["name"]) > 32:
         raise NameTooLong
 
     # Validate topic
     # Check if topic is valid
+    _LOGGER.debug("Checking if topic is valid")
     if data["topic"].endswith("/#"):
         data["topic"] = data["topic"][:-2]
 
@@ -67,11 +80,13 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
-        """Handle the initial step."""
+        """Handle setup flow when user initializes a integration."""
         errors: dict[str, str] = {}
         if user_input is not None:
             try:
                 info = await validate_input(self.hass, user_input)
+            except NameAlreadyExists:
+                errors["base"] = "name_already_exists"
             except NameTooShort:
                 errors["base"] = "name_too_short"
             except NameTooLong:
@@ -88,6 +103,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="user", data_schema=STEP_USER_DATA_SCHEMA, errors=errors
         )
+
+
+class NameAlreadyExists(HomeAssistantError):
+    """Error to indicate the name already exists."""
 
 
 class NameTooShort(HomeAssistantError):

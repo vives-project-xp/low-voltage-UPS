@@ -14,39 +14,63 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
 
+_LOGGER = logging.getLogger(__name__)
+
+# A list of all binary sensors (add more if you need them)
 BINARY_SENSORS: tuple[BinarySensorEntityDescription, ...] = (
+    # Indicating that the battery is being charged (charging)
+    BinarySensorEntityDescription(
+        name="charging_battery",
+        key="charging_battery",
+        translation_key="charging_battery",
+    ),
     # Indicating that the battery is in use (discharging)
     BinarySensorEntityDescription(
-        name="battery_inuse",
-        key="battery_inuse",
-        translation_key="battery_inuse",
-        icon="mdi:battery-arrow-down",
+        name="using_battery",
+        key="using_battery",
+        translation_key="using_battery",
     ),
-    # Indicating power loss (mains power is not available)
+    # Indicating if mains power is being received
     BinarySensorEntityDescription(
-        name="recieving_power",
-        key="recieving_power",
-        translation_key="recieving_power",
+        name="receiving_power",
+        key="receiving_power",
+        translation_key="receiving_power",
     ),
 )
 
-_LOGGER = logging.getLogger(__name__)
+# A list of the icons used for each binary sensor (add more if you need them)
+ICONS = {
+    "charging_battery": {
+        True: "mdi:battery-charging",
+        False: "mdi:battery",
+    },
+    "using_battery": {
+        True: "mdi:battery-arrow-down",
+        False: "mdi:battery",
+    },
+    "receiving_power": {
+        True: "mdi:power-plug",
+        False: "mdi:power-plug-off",
+    },
+}
 
 
+# This is the main function that is called by HA to set up the platform.
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up LVUPS sensors from config entry."""
+    """Set up LVUPS binary sensors from config entry."""
 
-    # Add all sensors to a list
+    # Create all the binary sensors and add them to HA.
     for description in BINARY_SENSORS:
         async_add_entities([LVUPSBinarySensor(hass, description, config_entry)])
 
 
+# This is the class that represents a binary sensor.
 class LVUPSBinarySensor(BinarySensorEntity):
-    """Representation of a LVUPS that is updated via MQTT."""
+    """Representation of a LVUPS BinarySensor that is updated via MQTT."""
 
     _attr_has_entity_name = (
         True  # We want to use the friendly name from the entity registry
@@ -76,18 +100,30 @@ class LVUPSBinarySensor(BinarySensorEntity):
             return False
         return True
 
+    # This property lets HA know what icon to use in the frontend.
+    @property
+    def icon(self) -> str | None:
+        """Return the icon to use in the frontend, if any."""
+        if self.is_on is None:
+            return ICONS[self.entity_description.key][False]
+        return ICONS[self.entity_description.key][self.is_on]
+
     # This property lets HA know the value of the sensor
     @property
     def is_on(self) -> bool | None:
         """Return the state of the sensor."""
-        return getattr(self._lvups, str(self.entity_description.key))
+        return getattr(self._lvups, self.entity_description.key)
 
     async def async_added_to_hass(self) -> None:
         """Run when this Entity has been added to HA."""
-        # Sensors should also register callbacks to HA when their state changes
-        self._lvups.register_callback(self.async_write_ha_state)
+        # Binary sensors should also register callbacks to HA when their state changes
+        self._lvups.register_callback(
+            {self.entity_description.key: self.async_write_ha_state}
+        )
 
     async def async_will_remove_from_hass(self) -> None:
-        """Entity being removed from hass."""
+        """Run when this Entity is being removed from hass."""
         # The opposite of async_added_to_hass. Remove any registered call backs here.
-        self._lvups.remove_callback(self.async_write_ha_state)
+        self._lvups.remove_callback(
+            {self.entity_description.key: self.async_write_ha_state}
+        )
