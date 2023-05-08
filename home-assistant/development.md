@@ -10,7 +10,8 @@
 2. [Usage](#2-usage)
 3. [Testing](#3-testing)
 4. [The lvups component](#4-the-lvups-component)
-    1. [File structure and relations](#41-file-structure-and-relations)
+    1. [Device information](#41-device-information)
+    2. [File structure and relations](#42-file-structure-and-relations)
 
 ## 1. Installation
 
@@ -106,7 +107,37 @@ This means that you will need to create a user, set a password, etc.
 
 ## 4. The lvups component
 
-### 4.1 File structure and relations
+### 4.1 Device information
+
+The lvups device has the following attributes:
+
+controls:
+
+- `Charge battery`: A switch that can be used to tell the device it should charge the battery. (default: `off`)
+- `Use battery`: A switch that can be used to tell the device it should use the battery, when recieving grid power. (default: `off`)
+
+sensors:
+
+- `Battery percentage`: A sensor that shows the current battery percentage.
+- `Charge time`: A sensor that shows the time left until the battery is fully charged, estimate. (When charging)
+- `Discharge time`: A sensor that shows the time left until the battery is fully discharged, estimate. (When discharging)
+- `Discharge time max load`: A sensor that shows the time left until the battery is fully discharged, estimate on max load. (Always shown)
+- `Charging battery`: A sensor that shows if the battery is currently charging.
+- `Using battery`: A sensor that shows if the battery is currently being used.
+- `Recieving power`: A sensor that shows if the device is currently recieving power from the grid.
+
+Configuration:
+
+- `Battery size`: The capacity of the battery in mAh. (default: `0`)
+- `Max charge`: The maximum percentage the battery can be charged to. (default: `100`)
+- `Min charge`: The minimum percentage the battery can be discharged to. (default: `0`)
+- `Restart`: A button that can be used to restart the device.
+
+Diagnostic:
+
+- `Uptime`: The time the device has been running, in `hours:minutes:seconds` format.
+
+### 4.2 File structure and relations
 
 ![schema of the file structure](./img/file_structure.png)
 
