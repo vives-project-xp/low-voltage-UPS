@@ -1,0 +1,100 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "name": "Name",
+          "topic": "Topic"
+        }
+      }
+    },
+    "error": {
+      "name_already_exists": "Name already exists",
+      "name_too_short": "Name is too short",
+      "name_too_long": "Name is too long",
+      "invalid_topic": "Not a valid topic"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "consumption_high_tarif": {
+        "name": "Consumption high tarif"
+      },
+      "consumption_low_tarif": {
+        "name": "Consumption low tarif"
+      },
+      "production_high_tarif": {
+        "name": "Production high tarif"
+      },
+      "production_low_tarif": {
+        "name": "Production low tarif"
+      },
+      "total_power_consumption": {
+        "name": "Total power consumption"
+      },
+      "total_power_production": {
+        "name": "Total power production"
+      },
+      "actual_voltage_l1": {
+        "name": "Actual voltage L1"
+      },
+      "actual_voltage_l2": {
+        "name": "Actual voltage L2"
+      },
+      "actual_voltage_l3": {
+        "name": "Actual voltage L3"
+      },
+      "actual_current_l1": {
+        "name": "Actual current L1"
+      },
+      "actual_current_l2": {
+        "name": "Actual current L2"
+      },
+      "actual_current_l3": {
+        "name": "Actual current L3"
+      },
+      "l1_power_production": {
+        "name": "L1 power production"
+      },
+      "l2_power_production": {
+        "name": "L2 power production"
+      },
+      "l3_power_production": {
+        "name": "L3 power production"
+      },
+      "l1_power_consumption": {
+        "name": "L1 power consumption"
+      },
+      "l2_power_consumption": {
+        "name": "L2 power consumption"
+      },
+      "l3_power_consumption": {
+        "name": "L3 power consumption"
+      },
+      "gas_meter_m3": {
+        "name": "Gas meter m3"
+      },
+      "decoded": {
+        "name": "Decoded"
+      },
+      "timeouts": {
+        "name": "Timeouts"
+      },
+      "published": {
+        "name": "Published"
+      },
+      "crcerrors": {
+        "name": "Crcerrors"
+      },
+      "uptime": {
+        "name": "Uptime"
+      }
+    },
+    "binary_sensor": {
+      "actual_tarif": {
+        "name": "Actual tarif"
+      }
+    }
+  }
+}
+  

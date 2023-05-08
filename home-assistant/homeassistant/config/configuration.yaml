@@ -1,6 +1,0 @@
-homeassistant:
-default_config:
-
-mqtt: !include mqtt.yaml
-group: !include groups.yaml
-automation: !include automations.yaml
