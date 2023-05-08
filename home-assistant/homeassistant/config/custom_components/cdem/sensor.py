@@ -267,7 +267,7 @@ async def async_setup_entry(
 
 
 class CDEMSensor(SensorEntity):
-    """Representation of a CDEM that is updated via MQTT."""
+    """Representation of a CDEM sensor that is updated via MQTT."""
 
     _attr_has_entity_name = (
         True  # We want to use the friendly name from the entity registry
@@ -306,9 +306,13 @@ class CDEMSensor(SensorEntity):
     async def async_added_to_hass(self) -> None:
         """Run when this Entity has been added to HA."""
         # Sensors should also register callbacks to HA when their state changes
-        self._cdem.register_callback(self.async_write_ha_state)
+        self._cdem.register_callback(
+            {self.entity_description.key: self.async_write_ha_state}
+        )
 
     async def async_will_remove_from_hass(self) -> None:
         """Entity being removed from hass."""
         # The opposite of async_added_to_hass. Remove any registered call backs here.
-        self._cdem.remove_callback(self.async_write_ha_state)
+        self._cdem.remove_callback(
+            {self.entity_description.key: self.async_write_ha_state}
+        )

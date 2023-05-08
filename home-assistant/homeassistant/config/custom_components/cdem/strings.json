@@ -9,6 +9,7 @@
         }
       },
       "error": {
+        "name_already_exists": "Name already exists",
         "name_too_short": "Name is too short",
         "name_too_long": "Name is too long",
         "invalid_topic": "Not a valid topic"

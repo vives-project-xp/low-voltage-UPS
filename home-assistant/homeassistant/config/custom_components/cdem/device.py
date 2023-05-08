@@ -30,7 +30,12 @@ class CDEM:
         self.name = name
         self._id = name.lower()
         self._topic = topic
-        self._callbacks = set[Callable[[], None]]()
+        self._callbacks = dict[
+            str, Callable[[], None]
+        ]()  # List of callbacks for platforms (attribute, callback)
+        self._subscriptions = dict[
+            str, Callable[[], None]
+        ]()  # List of subscriptions (topic, callback)
 
         # Make event to check if retained announce message is received (on startup)
         self._recieved_retained_announce = asyncio.Event()
@@ -85,34 +90,30 @@ class CDEM:
             suggested_area="Garage",
         )
 
-    def register_callback(self, callback: Callable[[], None]) -> None:
+    def register_callback(self, callback: dict[str, Callable[[], None]]) -> None:
         """Register callback, called when cdem sensor changes state."""
-        self._callbacks.add(callback)
+        self._callbacks.update(callback)
 
-    def remove_callback(self, callback: Callable[[], None]) -> None:
+    def remove_callback(self, callback: dict[str, Callable[[], None]]) -> None:
         """Remove previously registered callback."""
-        self._callbacks.discard(callback)
+        for key in callback:
+            if key in self._callbacks:
+                self._callbacks.pop(key)
 
     async def subscribe(self) -> None:
         """Handle subscription to MQTT topics and callbacks when messages are received."""
 
         def call_callback_for_attribute(attribute):
             """Call the callback for the given attribute."""
-            # Define the entity we're looking for
-            entity = f"sensor.{self.name}_{attribute}"
+            # Check if the attribute is in the callback dictionary
+            if attribute not in self._callbacks.keys():
+                return
 
-            # Filter the callbacks to find the one that corresponds to the entity
-            matching_callbacks = [
-                callback
-                for callback in self._callbacks
-                if callback.__self__.entity_id == entity
-            ]
+            # If it is, get the callback
+            callback = self._callbacks[attribute]
 
-            # If there is a matching callback, get the first one in the list (there should only be one)
-            if matching_callbacks:
-                selected_callback = matching_callbacks[0]
-                # Now we have the callback, call it
-                selected_callback()
+            # Call the callback
+            callback()
 
         @ha_callback
         def message_received(message):
@@ -142,6 +143,14 @@ class CDEM:
 
                     # Loop through the attributes and update the values if they are in the payload and have changed
                     for attribute in attributes:
+                        if (
+                            attribute not in payload
+                            and getattr(self, "_" + attribute.lower()) is not None
+                        ):
+                            setattr(self, "_" + attribute.lower(), None)
+                            call_callback_for_attribute(attribute.lower())
+                            _LOGGER.debug("Updated %s to %s", attribute, None)
+
                         if attribute in payload and payload[attribute] != getattr(
                             self, "_" + attribute
                         ):
@@ -162,10 +171,12 @@ class CDEM:
 
         # Subscribe to all topics and call the message_received function when a message is received
         for topic in TOPICS:
-            await mqtt.async_subscribe(
+            subscription = await mqtt.async_subscribe(
                 self._hass, self._topic + "/" + topic, message_received
             )
             _LOGGER.debug("Subscribed to topic %s", self._topic + "/" + topic)
+            self._subscriptions[topic] = subscription
+
         # wait for the first message to be received or timeout after 5 seconds
         try:
             await asyncio.wait_for(self._recieved_retained_announce.wait(), timeout=5)
@@ -173,6 +184,12 @@ class CDEM:
         except asyncio.TimeoutError:
             _LOGGER.error("Timeout while waiting for first message")
             return
+
+    async def unsubscribe(self) -> None:
+        """Unsubscribe from all MQTT topics."""
+        for topic, subscription in self._subscriptions.items():
+            subscription()
+            _LOGGER.debug("Unsubscribed from topic %s", topic)
 
     # Define the properties for the attributes (these will be used by the sensors)
     @property

@@ -34,7 +34,17 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # This is called when an entry/configured device is to be removed. The class
     # needs to unload itself, and remove callbacks. See the classes for further
     # details
+
+    # Get the instance of the class that was created in the async_setup_entry function.
+    cdem = hass.data[DOMAIN][entry.entry_id]
+
+    # Unsubscribe from updates from the device.
+    await cdem.unsubscribe()
+
+    # This unloads each platform.
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+
+    # Remove the instance of the class from the hass.data dictionary.
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id)
 
