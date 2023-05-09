@@ -1,6 +1,11 @@
 # IO documentation
 
-## The INA219
+# How some IC`s work.
+
+1. INA219
+2. MCP4531 
+
+# The INA219
 
 The INA219 is a ic that Calculates the current and measures the voltage.
 
@@ -79,6 +84,23 @@ In our case using 2 shunt resistor in parallel and resistent of  $0.01\Omega$ ea
 
 ***
 
-## MCP4531
+# MCP4531
 
+## I2C Address
 
+1. The 7 bit address for the digital potentiometer is 0b0101110
+
+## The data registers
+
+### Wiper 0 0x00
+
+write 10 bits of data MSB wil be ignored only 9 will be saved.
+
+read 2 Bytes and only the last 10 bits have data.
+
+### some screenshots.
+
+![CommandTable](img/CommandTable.png)
+![RegisterAddresses](img/RegisterAddresses.png)
+![WriteCommand](img/WriteCommand.png)
+![ReadCommand](img/ReadCommand.png)

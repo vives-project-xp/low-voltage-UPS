@@ -1,6 +1,6 @@
 <template>
-    <div class="p-16 bg-base-200">
-        <h1 class="text-4xl font-bold text-center">{{ title }}</h1>
+    <div class="p-8">
+        <h1 class=" p-2 text-4xl font-bold text-center">{{ title }}</h1>
     </div>
 </template>
 
