@@ -1,0 +1,72 @@
+{
+    "config": {
+        "error": {
+            "invalid_topic": "Not a valid topic",
+            "name_already_exists": "Name already exists",
+            "name_too_long": "Name is too long",
+            "name_too_short": "Name is too short"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "name": "Name",
+                    "topic": "Topic"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "charging_battery": {
+                "name": "Charging battery"
+            },
+            "receiving_power": {
+                "name": "Recieving power"
+            },
+            "using_battery": {
+                "name": "Using battery"
+            }
+        },
+        "button": {
+            "restart": {
+                "name": "Restart"
+            }
+        },
+        "number": {
+            "battery_size": {
+                "name": "Battery size"
+            },
+            "max_battery_charge": {
+                "name": "Max charge"
+            },
+            "min_battery_charge": {
+                "name": "Min charge"
+            }
+        },
+        "sensor": {
+            "battery_percentage": {
+                "name": "Battery percentage"
+            },
+            "charge_time": {
+                "name": "Charge time"
+            },
+            "discharge_time": {
+                "name": "Discharge time"
+            },
+            "discharge_time_ml": {
+                "name": "Discharge time max load"
+            },
+            "uptime": {
+                "name": "Uptime"
+            }
+        },
+        "switch": {
+            "charge_battery": {
+                "name": "Charge battery"
+            },
+            "use_battery": {
+                "name": "Use battery"
+            }
+        }
+    }
+}

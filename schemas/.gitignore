@@ -1,1 +1,3 @@
+# Ignore drawio backup files
 *.dtmp
+*.bkp
