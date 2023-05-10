@@ -12,3 +12,14 @@ To make it easier to read and understand, the documentation is split into three 
 
 The component isn't finished yet, so the documentation is still a work in progress.
 Information about the component can be found in the [development](development.md) section.
+
+## Images
+
+### Adding the device to Home Assistant
+
+![adding_new_device](./img/adding_new_device.png)
+
+### Overview of the device
+
+![device_overview](./img/device_overview.png)
+![device_overview 2](./img/device_overview_2.png)
