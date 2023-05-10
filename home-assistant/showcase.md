@@ -43,7 +43,7 @@ To setup the containers, follow the steps below:
 After the containers are started, got to the Home Assistant web interface using the following [link](http://localhost:8123).  
 Now you can configure Home Assistant to your liking, for more info about this, see the [Home Assistant documentation](https://www.home-assistant.io/docs/).  
 We also need to add our mqtt broker to Home Assistant, for more info about this, see the [MQTT documentation](https://www.home-assistant.io/integrations/mqtt/).  
-The mqtt broker is available at `localhost:1883`.
+The mqtt broker is available at `mosquitto:1883`.
 
 ## 2. Usage
 
