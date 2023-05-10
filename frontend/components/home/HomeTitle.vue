@@ -3,7 +3,7 @@
     <div class=" rounded-2xl tertiary-color-card md:mx-8 mx-4">
         <div class="flex md:flex-row flex-col p-8 ">
             <div class="md:w-1/3 mr-8 md:mr-4 w-auto ms:mr-0">
-                <img src="/img/case.webp" alt="placeholder">
+                <img src="/img/case_transparent.png" alt="placeholder">
             </div>
             <div class="md:w-2/3 w-auto text-center ">
                 <h1 class=" divider text-2xl md:text-4xl font-bold py-5" > LevelUp! Your home</h1>
