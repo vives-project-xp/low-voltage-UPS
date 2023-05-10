@@ -100,7 +100,37 @@ Diagnostic:
 
 Here are some automation examples that you can use:
 
-TODO: Add automation examples
+- Get a notification when there is no power going to the device (possible grid power loss):
+
+    ```text
+        trigger:
+            - UPS recieving power: 'off'
+        action:
+            - Call notify service with message: 'Grid power loss'
+    ```
+
+- Charge bettery when solar power is avaialble: (example made using cdem for getting data from smartmeter)
+
+    ```text
+        trigger:
+            - cdem power production: '> 0'
+        condition:
+            - UPS battery percentage: '< 100'
+        action:
+            - UPS charge battery: 'on'
+    ```
+
+- Use battery when grid power uses high tarif: (also using the cdem component)
+
+    ```text
+        trigger:
+            - cdem tarif: 'high'
+        condition:
+            - UPS battery percentage: '> 50'
+        action:
+            - UPS use battery: 'on'
+    ```
+
 
 ## 3. Troubleshooting
 
