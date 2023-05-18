@@ -48,7 +48,7 @@ But also means that your code needs to follow the Home Assistant Rules and Guide
 
 #### 1.2.1 Add the component to the custom_components folder
 
-1. Got to the config folder of your Home Assistant installation and create a new folder called `custom_components` (if it doesn't exist already).
+1. Go to the config folder of your Home Assistant installation and create a new folder called `custom_components` (if it doesn't exist already).
 2. In this folder just drag and drop the content of the `component` folder from this repository.
 
 That's it, the component is now added to your Home Assistant installation.
@@ -87,7 +87,7 @@ That's it, the component is now added to your Home Assistant installation.
 
 4. Wait for the script to finish. (Home Assistant will create all the necessary files for you)
 5. Open the folder `homeassistant/components/lvups` in your favorite editor.
-6. Replace the contents of the folder with the contents of the `component` folder from this repository.
+6. Replace the contents of the folder with the contents of the `component/lvups` folder from this repository.
 
 That's it, the component is now added to your Home Assistant installation.
 
