@@ -16,3 +16,5 @@ This repository contains the source code and documentation for our project.
 - `pcb`: Contains the PCB design files.
 - `schemas`: Contains the schema diagrams for the project.
 
+Link to video and ppt:
+[Onedrive](https://vivesonline-my.sharepoint.com/:f:/g/personal/r0782899_student_vives_be/ErkIe6ZSpKdGq8MmYVde3NIBA33tiSL_xVnvaDJGF-avBQ?e=PaFOph)
